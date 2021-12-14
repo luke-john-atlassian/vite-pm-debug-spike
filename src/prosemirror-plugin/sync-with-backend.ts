@@ -1,11 +1,27 @@
-import { Transaction } from "prosemirror-state";
+import { EditorState, Transaction } from "prosemirror-state";
+import { serialize } from "../serialisation-util/cycle";
+
+// note: we skip out of the type system when passing data between environments
+// this works via ts-ignores in this file, and deserialization in sync-with-editor-trackers
+type SerializableTransaction = Transaction;
+type SerializableEditorState = EditorState;
 
 export type TransactionEvent = {
   type: "transaction";
   editorId: string;
   time: number;
-  serializableTransaction: any;
+  serializableTransaction: SerializableTransaction;
+  serializableState: SerializableEditorState;
 };
+
+export type RegisteredEvent = {
+  type: "registered";
+  editorId: string;
+  time: number;
+  serializableState: SerializableEditorState;
+};
+
+export type EditorLogEvent = TransactionEvent | RegisteredEvent;
 
 export type DestroyEvent = {
   type: "destroy";
@@ -13,7 +29,7 @@ export type DestroyEvent = {
   time: number;
 };
 
-export type EditorTrackerMessage = (TransactionEvent | DestroyEvent) & {
+export type EditorTrackerMessage = (EditorLogEvent | DestroyEvent) & {
   pmEditorTrackerEvent: true;
 };
 
@@ -23,20 +39,34 @@ function localPostMessage(
   window.postMessage({ ...message, pmEditorTrackerEvent: true });
 }
 
-function getSerializableTransaction(transaction: Transaction) {
-  return { time: transaction.time };
-}
-
 export function getBackendNotifier(editorId: string) {
-  return {
-    transaction({ transaction }: { transaction: Transaction }) {
-      const serializableTransaction = getSerializableTransaction(transaction);
+  const notifier = {
+    logRegistered({ state }: { state: EditorState }) {
+      const registeredEvent: RegisteredEvent = {
+        type: "registered",
+        editorId,
+        time: Date.now(),
+        // @ts-ignore
+        serializableState: serialize(state),
+      };
 
+      localPostMessage(registeredEvent);
+    },
+    logTransaction({
+      transaction,
+      state,
+    }: {
+      transaction: Transaction;
+      state: EditorState;
+    }) {
       const transactionEvent: TransactionEvent = {
         type: "transaction",
         editorId,
         time: transaction.time,
-        serializableTransaction,
+        // @ts-ignore
+        serializableTransaction: serialize(transaction),
+        // @ts-ignore
+        serializableState: serialize(state),
       };
 
       localPostMessage(transactionEvent);
@@ -51,4 +81,6 @@ export function getBackendNotifier(editorId: string) {
       localPostMessage(destroyEvent);
     },
   };
+
+  return notifier;
 }

@@ -7,6 +7,8 @@ import { baseKeymap } from "prosemirror-commands";
 import { keymap } from "prosemirror-keymap";
 import { undo, redo, history } from "prosemirror-history";
 
+import "prosemirror-view/style/prosemirror.css";
+
 import { devtoolsPlugin } from "./prosemirror-plugin/plugin";
 
 export function Editor() {

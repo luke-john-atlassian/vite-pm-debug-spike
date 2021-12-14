@@ -1,5 +1,11 @@
 import { EditorTrackerMessage } from "../prosemirror-plugin/sync-with-backend";
-import { markEditorAsNotActivelyTracked, receiveTransaction } from "./backend";
+import { deserialize } from "../serialisation-util/cycle";
+
+import {
+  markEditorAsNotActivelyTracked,
+  receiveTransaction,
+  registerTrackedEditor,
+} from "./backend";
 
 function isPmEditorTrackerMessage(
   message: any
@@ -16,8 +22,21 @@ export function editorTrackerEventHandler(event: any) {
 
   switch (message.type) {
     case "transaction": {
-      receiveTransaction(message);
+      const messageWithDeserializedValues: typeof message = {
+        ...message,
+        serializableState: deserialize(message.serializableState),
+        serializableTransaction: deserialize(message.serializableTransaction),
+      };
+
+      receiveTransaction(messageWithDeserializedValues);
       break;
+    }
+    case "registered": {
+      const messageWithDeserializedValues: typeof message = {
+        ...message,
+        serializableState: deserialize(message.serializableState),
+      };
+      registerTrackedEditor(messageWithDeserializedValues);
     }
     case "destroy": {
       markEditorAsNotActivelyTracked(message.editorId);

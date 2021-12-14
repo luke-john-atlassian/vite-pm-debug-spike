@@ -1,5 +1,5 @@
 import { TrackedEditor } from "../../backend/backend";
-import { TransactionExplorer } from "./TransactionExplorer/TransactionExplorer";
+import { LogExplorer } from "./LogExplorer/LogExplorer";
 
 export function TrackedEditorUI({
   trackedEditor,
@@ -9,7 +9,7 @@ export function TrackedEditorUI({
   return (
     <div>
       <h2>Tracked UI</h2>
-      <TransactionExplorer transactions={trackedEditor.transactionHistory} />
+      <LogExplorer log={trackedEditor.log} />
     </div>
   );
 }

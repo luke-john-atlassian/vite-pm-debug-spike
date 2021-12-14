@@ -15,22 +15,24 @@ export class EditorTracker {
   // and following both, the editorView and editorState will be set.
   id: string;
   private editorView!: EditorView;
-  notifyBackend: ReturnType<typeof getBackendNotifier>;
+  backendNotifier: ReturnType<typeof getBackendNotifier>;
 
   constructor(private editorState: EditorState) {
     this.id = getDebugBackendSyncIdCounter();
-    this.notifyBackend = getBackendNotifier(this.id);
+    this.backendNotifier = getBackendNotifier(this.id);
   }
   private registerEditorView(editorView: EditorView) {
     this.editorView = editorView;
+
+    this.backendNotifier.logRegistered({ state: this.editorState });
   }
 
-  onTransactionComplete(transaction: Transaction<any>) {
-    this.notifyBackend.transaction({ transaction });
+  onTransactionComplete(transaction: Transaction<any>, newState: any) {
+    this.backendNotifier.logTransaction({ transaction, state: newState });
   }
 
   destroy() {
-    this.notifyBackend.destroy();
+    this.backendNotifier.destroy();
   }
 
   // ---
@@ -62,7 +64,7 @@ export class EditorTracker {
     oldState: EditorState<S>,
     newState: EditorState<S>
   ): Transaction<S> {
-    this.onTransactionComplete(tr);
+    this.onTransactionComplete(tr, newState);
     return tr;
   }
 

@@ -1,13 +1,10 @@
-import type { Node as ProsemirrorNode } from "prosemirror-model";
-import type { Transaction as ProsemirrorTransaction } from "prosemirror-state";
 import type {
+  EditorLogEvent,
   EditorTrackerMessage,
   TransactionEvent,
 } from "../prosemirror-plugin/sync-with-backend";
 
 import "./sync-with-editor-trackers";
-
-type TransactionHistoryEntry = TransactionEvent;
 
 export type TrackedEditor = {
   activelyTracked: boolean;
@@ -16,7 +13,7 @@ export type TrackedEditor = {
   // TODO decide where this comes from
   // suggestion > dom path
   label: string;
-  transactionHistory: TransactionHistoryEntry[];
+  log: EditorLogEvent[];
 };
 
 export type BackendDebugInterface = {
@@ -27,21 +24,38 @@ export const backendDebugInterface: BackendDebugInterface = {
   trackedEditors: {},
 };
 
+export function registerTrackedEditor(
+  registeredMessage: Extract<EditorTrackerMessage, { type: "registered" }>
+) {
+  const { editorId } = registeredMessage;
+
+  if (!backendDebugInterface.trackedEditors[editorId]) {
+    backendDebugInterface.trackedEditors[editorId] = {
+      activelyTracked: true,
+      id: editorId,
+      label: editorId,
+      log: [],
+    };
+  }
+  backendDebugInterface.trackedEditors[editorId].log.unshift(registeredMessage);
+}
+
 export function receiveTransaction(
   transactionMessage: Extract<EditorTrackerMessage, { type: "transaction" }>
 ) {
-  if (!backendDebugInterface.trackedEditors[transactionMessage.editorId]) {
-    backendDebugInterface.trackedEditors[transactionMessage.editorId] = {
+  const { editorId } = transactionMessage;
+  if (!backendDebugInterface.trackedEditors[editorId]) {
+    backendDebugInterface.trackedEditors[editorId] = {
       activelyTracked: true,
-      id: transactionMessage.editorId,
-      label: transactionMessage.editorId,
-      transactionHistory: [],
+      id: editorId,
+      label: editorId,
+      log: [],
     };
   }
 
-  backendDebugInterface.trackedEditors[
-    transactionMessage.editorId
-  ].transactionHistory.unshift(transactionMessage);
+  const transactionEntry = transactionMessage;
+
+  backendDebugInterface.trackedEditors[editorId].log.unshift(transactionEntry);
 }
 
 export function markEditorAsNotActivelyTracked(editorId: string) {
