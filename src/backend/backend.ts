@@ -29,15 +29,12 @@ export function registerTrackedEditor(
 ) {
   const { editorId } = registeredMessage;
 
-  if (!backendDebugInterface.trackedEditors[editorId]) {
-    backendDebugInterface.trackedEditors[editorId] = {
-      activelyTracked: true,
-      id: editorId,
-      label: editorId,
-      log: [],
-    };
-  }
-  backendDebugInterface.trackedEditors[editorId].log.unshift(registeredMessage);
+  backendDebugInterface.trackedEditors[editorId] = {
+    activelyTracked: true,
+    id: editorId,
+    label: editorId,
+    log: [registeredMessage],
+  };
 }
 
 export function receiveTransaction(
@@ -53,9 +50,9 @@ export function receiveTransaction(
     };
   }
 
-  const transactionEntry = transactionMessage;
-
-  backendDebugInterface.trackedEditors[editorId].log.unshift(transactionEntry);
+  backendDebugInterface.trackedEditors[editorId].log.unshift(
+    transactionMessage
+  );
 }
 
 export function markEditorAsNotActivelyTracked(editorId: string) {

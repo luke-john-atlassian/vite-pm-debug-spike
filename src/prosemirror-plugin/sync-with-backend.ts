@@ -6,6 +6,11 @@ import { serialize } from "../serialisation-util/cycle";
 type SerializableTransaction = Transaction;
 type SerializableEditorState = EditorState;
 
+// serialized state challenges
+// 1. cyclical references in pm objects
+// 2. dom node references
+// 3. functions on objects -- funky functions with toString methods setup on them that require overwriting (ie. provide your own implementation or it throws)
+
 export type TransactionEvent = {
   type: "transaction";
   editorId: string;

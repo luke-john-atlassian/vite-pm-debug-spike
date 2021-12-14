@@ -16,7 +16,6 @@ export class EditorTracker {
   id: string;
   private editorView!: EditorView;
   backendNotifier: ReturnType<typeof getBackendNotifier>;
-
   constructor(private editorState: EditorState) {
     this.id = getDebugBackendSyncIdCounter();
     this.backendNotifier = getBackendNotifier(this.id);
@@ -34,6 +33,10 @@ export class EditorTracker {
   destroy() {
     this.backendNotifier.destroy();
   }
+
+  // ---
+  // Methods monkey patched on EditorView ...
+  //
 
   // ---
   // Methods registered on the plugin

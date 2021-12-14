@@ -8,7 +8,7 @@ export function TrackedEditorUI({
 }) {
   return (
     <div>
-      <h2>Tracked UI</h2>
+      <h2>Editor - {trackedEditor.label}</h2>
       <LogExplorer log={trackedEditor.log} />
     </div>
   );
