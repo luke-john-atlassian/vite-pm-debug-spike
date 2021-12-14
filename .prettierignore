@@ -1,0 +1,23 @@
+# ignore everything by default
+*
+
+# don't ignore directories
+!*/
+
+# don't ignore these file types
+!*.js
+!*.ts
+!*.tsx
+!*.md
+
+# ignore these special case paths/files
+*.ejs
+*.json
+!teams.json
+dist
+node_modules
+.yarn
+.storybook
+**/CHANGELOG.md
+**/README.md
+**/__generated__
