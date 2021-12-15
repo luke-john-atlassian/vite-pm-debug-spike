@@ -8,11 +8,25 @@ export function LogEntryOverview({
 }: {
   entry: TrackedEditor["log"][number];
 }) {
+  if (entry.type === "registered") {
+    return (
+      <Fragment>
+        <h3>Transaction Overview</h3>
+        <JSONTree
+          data={entry.serializableState}
+          theme={theme}
+          invertTheme={false}
+          hideRoot
+        />
+      </Fragment>
+    );
+  }
+
   return (
     <Fragment>
       <h3>Transaction Overview</h3>
       <JSONTree
-        data={entry.serializableState}
+        data={entry.serializableTransaction}
         theme={theme}
         invertTheme={false}
         hideRoot

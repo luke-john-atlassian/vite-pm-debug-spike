@@ -2,6 +2,10 @@ import { EditorState, Plugin, Transaction } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { Schema } from "prosemirror-model";
 import { getBackendNotifier } from "./sync-with-backend";
+import {
+  getTransactionStack,
+  TransactionStack,
+} from "./utils/getTransactionStack";
 
 let debugBackendSyncIdCounter = 0;
 function getDebugBackendSyncIdCounter() {
@@ -19,15 +23,24 @@ export class EditorTracker {
   constructor(private editorState: EditorState) {
     this.id = getDebugBackendSyncIdCounter();
     this.backendNotifier = getBackendNotifier(this.id);
+
+    this.monkeyPatchApplyTransaction(editorState);
   }
   private registerEditorView(editorView: EditorView) {
     this.editorView = editorView;
 
     this.backendNotifier.logRegistered({ state: this.editorState });
+
+    this.monkeyPatch_editorView_eventHandlers();
   }
 
+  private lastTransactionStack: TransactionStack | undefined = undefined;
   onTransactionComplete(transaction: Transaction<any>, newState: any) {
-    this.backendNotifier.logTransaction({ transaction, state: newState });
+    this.backendNotifier.logTransaction({
+      transaction,
+      state: newState,
+      stack: this.lastTransactionStack!,
+    });
   }
 
   destroy() {
@@ -37,6 +50,37 @@ export class EditorTracker {
   // ---
   // Methods monkey patched on EditorView ...
   //
+
+  //     view.dom.addEventListener(event, view.eventHandlers[event] = event => {
+  monkeyPatch_editorView_eventHandlers() {}
+
+  // ---
+  // Methods monkey patched on EditorState ...
+  //
+  monkeyPatchApplyTransaction(editorState: EditorState) {
+    const original_applyTransaction = editorState.applyTransaction;
+    let newEditorState: EditorState;
+
+    editorState.applyTransaction = (tr: any) => {
+      this.editorState_applyTransaction(tr);
+      let result = original_applyTransaction.call(editorState, tr);
+
+      newEditorState = result.state;
+      this.monkeyPatchApplyTransaction(newEditorState!);
+
+      return result;
+    };
+  }
+
+  editorState_applyTransaction(rootTr: Transaction) {
+    try {
+      throw new Error();
+    } catch (err: any) {
+      const transactionPath = getTransactionStack(err.stack);
+      this.lastTransactionStack = transactionPath;
+    }
+    console.log(rootTr);
+  }
 
   // ---
   // Methods registered on the plugin

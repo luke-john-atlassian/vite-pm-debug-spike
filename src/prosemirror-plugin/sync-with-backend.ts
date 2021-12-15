@@ -1,5 +1,6 @@
 import { EditorState, Transaction } from "prosemirror-state";
 import { serialize } from "../serialisation-util/cycle";
+import { TransactionStack } from "./utils/getTransactionStack";
 
 // note: we skip out of the type system when passing data between environments
 // this works via ts-ignores in this file, and deserialization in sync-with-editor-trackers
@@ -15,6 +16,7 @@ export type TransactionEvent = {
   type: "transaction";
   editorId: string;
   time: number;
+  stack: TransactionStack;
   serializableTransaction: SerializableTransaction;
   serializableState: SerializableEditorState;
 };
@@ -60,14 +62,17 @@ export function getBackendNotifier(editorId: string) {
     logTransaction({
       transaction,
       state,
+      stack,
     }: {
       transaction: Transaction;
       state: EditorState;
+      stack: TransactionStack;
     }) {
       const transactionEvent: TransactionEvent = {
         type: "transaction",
         editorId,
         time: transaction.time,
+        stack,
         // @ts-ignore
         serializableTransaction: serialize(transaction),
         // @ts-ignore
