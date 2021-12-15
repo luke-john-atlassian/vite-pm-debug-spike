@@ -1,30 +1,10 @@
 import { useEffect, useState } from "react";
 import { backendDebugInterface } from "../backend/backend";
 import { LogExplorer } from "./LogExplorer/LogExplorer";
+
 export function DebugUI() {
-  const [syncBackendDebugInterface, setSyncBackendDebugInterface] = useState(
-    backendDebugInterface
-  );
-
-  useEffect(() => {
-    setInterval(() => {
-      setSyncBackendDebugInterface({
-        trackedEditors: {
-          ...backendDebugInterface.trackedEditors,
-        },
-      });
-    }, 100);
-  }, []);
-
-  const listOfTrackedEditors = Object.values(
-    syncBackendDebugInterface.trackedEditors
-  );
-  const [activeTrackedEditor, setActiveTrackedEditor] = useState(() => {
-    return listOfTrackedEditors.length ? listOfTrackedEditors[0] : null;
-  });
-  useEffect(() => {
-    setActiveTrackedEditor(listOfTrackedEditors[0]);
-  }, [listOfTrackedEditors.length !== 0]);
+  const { listOfTrackedEditors, activeTrackedEditor, setActiveTrackedEditor } =
+    useListOfTrackedEditors();
 
   return (
     <div
@@ -80,4 +60,41 @@ export function DebugUI() {
       ) : null}
     </div>
   );
+}
+
+function useListOfTrackedEditors() {
+  const liveBackendInterface = useLiveBackendInterface();
+  const listOfTrackedEditors = Object.values(
+    liveBackendInterface.trackedEditors
+  );
+  const [activeTrackedEditor, setActiveTrackedEditor] = useState(() => {
+    return listOfTrackedEditors.length ? listOfTrackedEditors[0] : null;
+  });
+  useEffect(() => {
+    setActiveTrackedEditor(listOfTrackedEditors[0]);
+  }, [listOfTrackedEditors.length !== 0]);
+
+  return {
+    listOfTrackedEditors,
+    activeTrackedEditor,
+    setActiveTrackedEditor,
+  };
+}
+
+function useLiveBackendInterface() {
+  const [liveBackendDebugInterface, setLiveBackendDebugInterface] = useState(
+    backendDebugInterface
+  );
+
+  useEffect(() => {
+    setInterval(() => {
+      setLiveBackendDebugInterface({
+        trackedEditors: {
+          ...backendDebugInterface.trackedEditors,
+        },
+      });
+    }, 100);
+  }, []);
+
+  return liveBackendDebugInterface;
 }
