@@ -6,8 +6,12 @@ import { TrackedEditor } from "../../../backend/backend";
 export function LogEntryOverview({
   entry,
 }: {
-  entry: TrackedEditor["log"][number];
+  entry?: TrackedEditor["log"][number];
 }) {
+  if (!entry) {
+    return null;
+  }
+
   if (entry.type === "registered") {
     return (
       <Fragment>

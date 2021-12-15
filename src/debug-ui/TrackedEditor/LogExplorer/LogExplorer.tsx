@@ -3,9 +3,18 @@ import { TrackedEditor } from "../../../backend/backend";
 
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntryOverview";
+import type { EditorLogEvent } from "../../../prosemirror-plugin/sync-with-backend";
 
 export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
-  const [selectedLogEntryIndex, setSelectedLogEntryIndex] = useState(0);
+  const [selectedLogEntry, setSelectedLogEntry] = useState<EditorLogEvent>();
+
+  const currentLogEntry = log.find((logEntry) => {
+    return logEntry.time === selectedLogEntry?.time;
+  });
+
+  function selectLogEntryTime(logEntry: TrackedEditor["log"][number]) {
+    setSelectedLogEntry(logEntry);
+  }
 
   return (
     <div>
@@ -21,14 +30,12 @@ export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
         <div>
           <LogList
             log={log}
-            selectedLogEntryIndex={selectedLogEntryIndex}
-            setSelectedLogEntryIndex={(transactionIndex: number) => {
-              setSelectedLogEntryIndex(transactionIndex);
-            }}
+            selectedLogEntry={selectedLogEntry}
+            setSelectedLogEntry={selectLogEntryTime}
           />
         </div>
         <div style={{ flexGrow: 1 }}>
-          <LogEntryOverview entry={log[selectedLogEntryIndex]} />
+          <LogEntryOverview entry={currentLogEntry} />
         </div>
       </div>
     </div>

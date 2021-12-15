@@ -5,12 +5,12 @@ import { EditorLogEvent } from "../../../prosemirror-plugin/sync-with-backend";
 
 export function LogList({
   log,
-  selectedLogEntryIndex,
-  setSelectedLogEntryIndex,
+  selectedLogEntry,
+  setSelectedLogEntry,
 }: {
   log: TrackedEditor["log"];
-  selectedLogEntryIndex: number;
-  setSelectedLogEntryIndex: (logIndex: number) => void;
+  selectedLogEntry?: EditorLogEvent;
+  setSelectedLogEntry: (logEntry: EditorLogEvent) => void;
 }) {
   return (
     <Fragment>
@@ -25,17 +25,15 @@ export function LogList({
         </thead>
         <tbody>
           {log.map((entry, index) => {
+            const isSelected = selectedLogEntry?.time === entry.time;
             return (
               <LogListEntry
                 key={entry.time}
-                onClick={() => setSelectedLogEntryIndex(index)}
-                aria-selected={
-                  selectedLogEntryIndex === index ? "true" : "false"
-                }
+                onClick={() => setSelectedLogEntry(entry)}
+                aria-selected={isSelected ? "true" : "false"}
                 style={{
-                  background:
-                    selectedLogEntryIndex === index ? "blue" : undefined,
-                  color: selectedLogEntryIndex === index ? "white" : undefined,
+                  background: isSelected ? "blue" : undefined,
+                  color: isSelected ? "white" : undefined,
                   cursor: "pointer",
                 }}
                 entry={entry}
@@ -62,10 +60,15 @@ function LogListEntry({
       ? entry.stack.path.map((entry) => entry.name).join(" > ")
       : "";
 
+  const time = new Date(entry.time);
+
   return (
     <tr {...trAttrs}>
       <td>{entry.type}</td>
-      <td>{entry.time}</td>
+      <td>
+        {time.toLocaleTimeString()}.
+        {time.getMilliseconds().toString().padStart(3, "0")}
+      </td>
       <td>{sourcePath}</td>
     </tr>
   );
