@@ -1,7 +1,8 @@
 import type * as React from "react";
 import { Fragment } from "react";
+
 import { TrackedEditor } from "../../backend/backend";
-import { EditorLogEvent } from "../../prosemirror-plugin/sync-with-backend";
+import { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
 export function LogList({
   log,

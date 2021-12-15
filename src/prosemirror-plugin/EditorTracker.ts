@@ -1,7 +1,10 @@
-import { EditorState, Plugin, Transaction } from "prosemirror-state";
+import { EditorState, Transaction } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { Schema } from "prosemirror-model";
-import { getBackendNotifier } from "./sync-with-backend";
+
+import { getSendToBackend } from "./comms/send-to-backend";
+import "./comms/listen-to-backend";
+
 import {
   getTransactionStack,
   TransactionStack,
@@ -12,31 +15,34 @@ function getDebugBackendSyncIdCounter() {
   return `debugBackendSyncId-${debugBackendSyncIdCounter++}`;
 }
 
+export let editorTrackers: EditorTracker[] = [];
+
 export class EditorTracker {
   private connected: boolean = false;
 
   // the constructor and plugin_view_update methods will be called in sequence
   // and following both, the editorView and editorState will be set.
   id: string;
-  private editorView!: EditorView;
-  backendNotifier: ReturnType<typeof getBackendNotifier>;
-  constructor(private editorState: EditorState) {
+  editorView!: EditorView;
+  sendToBackend: ReturnType<typeof getSendToBackend>;
+  constructor(public editorState: EditorState) {
     this.id = getDebugBackendSyncIdCounter();
-    this.backendNotifier = getBackendNotifier(this.id);
+    this.sendToBackend = getSendToBackend(this.id);
 
+    editorTrackers.push(this);
     this.monkeyPatchApplyTransaction(editorState);
   }
   private registerEditorView(editorView: EditorView) {
     this.editorView = editorView;
 
-    this.backendNotifier.logRegistered({ state: this.editorState });
+    this.sendToBackend.logRegistered({ state: this.editorState });
 
     this.monkeyPatch_editorView_eventHandlers();
   }
 
   private lastTransactionStack: TransactionStack | undefined = undefined;
   onTransactionComplete(transaction: Transaction<any>, newState: any) {
-    this.backendNotifier.logTransaction({
+    this.sendToBackend.logTransaction({
       transaction,
       state: newState,
       stack: this.lastTransactionStack!,
@@ -44,7 +50,7 @@ export class EditorTracker {
   }
 
   destroy() {
-    this.backendNotifier.destroy();
+    this.sendToBackend.destroy();
   }
 
   // ---
@@ -57,6 +63,7 @@ export class EditorTracker {
   // ---
   // Methods monkey patched on EditorState ...
   //
+
   monkeyPatchApplyTransaction(editorState: EditorState) {
     const original_applyTransaction = editorState.applyTransaction;
     let newEditorState: EditorState;
@@ -66,6 +73,7 @@ export class EditorTracker {
       let result = original_applyTransaction.call(editorState, tr);
 
       newEditorState = result.state;
+      this.editorState = result.state;
       this.monkeyPatchApplyTransaction(newEditorState!);
 
       return result;

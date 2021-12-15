@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { backendDebugInterface } from "../backend/backend";
 import { Tabs } from "./Components/Layout";
 import { LogExplorer } from "./LogExplorer/LogExplorer";
+import { Playground } from "./Playground/Playground";
 
 export function DebugUI() {
   const { listOfTrackedEditors, activeTrackedEditor, setActiveTrackedEditor } =
@@ -59,7 +60,7 @@ export function DebugUI() {
       <Tabs
         tabs={[
           { label: "Log Explorer" as const },
-          { label: "Transaction playground" as const },
+          { label: "Playground" as const },
         ]}
         contentComponent={(tab) => {
           if (!activeTrackedEditor) {
@@ -70,6 +71,19 @@ export function DebugUI() {
               <LogExplorer
                 log={activeTrackedEditor.log}
                 editorId={activeTrackedEditor.id}
+              />
+            );
+          }
+          if (tab.label === "Playground") {
+            return (
+              <Playground
+                editorId={activeTrackedEditor.id}
+                lastPlaygroundRunResult={
+                  activeTrackedEditor.lastPlaygroundRunResult
+                }
+                runPlaygroundScript={
+                  activeTrackedEditor.sendToEditorTracker.runPlaygroundScript
+                }
               />
             );
           }

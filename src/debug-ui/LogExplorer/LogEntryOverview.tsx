@@ -18,7 +18,7 @@ export function LogEntryOverview({
         <h3>Transaction Overview</h3>
         <JSONTree
           data={entry.serializableState}
-          theme={theme}
+          theme={JSONTreeTheme}
           invertTheme={false}
           hideRoot
         />
@@ -31,14 +31,14 @@ export function LogEntryOverview({
       <h3>Transaction Overview</h3>
       <JSONTree
         data={entry.serializableTransaction}
-        theme={theme}
+        theme={JSONTreeTheme}
         invertTheme={false}
         hideRoot
       />
     </Fragment>
   );
 }
-const theme = {
+export const JSONTreeTheme = {
   scheme: "Cupertino",
   author: "Defman21",
   base00: "#ffffff",

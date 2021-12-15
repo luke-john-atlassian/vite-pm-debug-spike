@@ -1,11 +1,12 @@
-import { EditorTrackerMessage } from "../prosemirror-plugin/sync-with-backend";
-import { deserialize } from "../serialisation-util/cycle";
+import { EditorTrackerMessage } from "../../prosemirror-plugin/comms/send-to-backend";
+import { deserialize } from "../../serialisation-util/cycle";
 
 import {
   markEditorAsNotActivelyTracked,
+  receiveLastPlaygroundRunResult,
   receiveTransaction,
   registerTrackedEditor,
-} from "./backend";
+} from "../backend";
 
 function isPmEditorTrackerMessage(
   message: any
@@ -37,6 +38,18 @@ export function editorTrackerEventHandler(event: any) {
         serializableState: deserialize(message.serializableState),
       };
       registerTrackedEditor(messageWithDeserializedValues);
+      break;
+    }
+    case "last-playground-run-result": {
+      const messageWithDeserializedValues: typeof message = {
+        ...message,
+        serializableLastPlaygroundRunResult: deserialize(
+          message.serializableLastPlaygroundRunResult
+        ),
+      };
+
+      receiveLastPlaygroundRunResult(messageWithDeserializedValues);
+
       break;
     }
     case "destroy": {

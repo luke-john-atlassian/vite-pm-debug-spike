@@ -46,7 +46,12 @@ export function Tabs<Tabs extends TabInfo[]>({
           );
         })}
       </div>
-      <div role="tabpanel" tabIndex={0} aria-labelled-by={getTabId(activeTab)}>
+      <div
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={getTabId(activeTab)}
+        style={{ flex: "1" }}
+      >
         {contentComponent(activeTab)}
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { TrackedEditor } from "../../backend/backend";
+import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntryOverview";
-import type { EditorLogEvent } from "../../prosemirror-plugin/sync-with-backend";
 
 export function LogExplorer({
   log,

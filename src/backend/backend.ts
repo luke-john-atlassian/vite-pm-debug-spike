@@ -2,9 +2,13 @@ import type {
   EditorLogEvent,
   EditorTrackerMessage,
   TransactionEvent,
-} from "../prosemirror-plugin/sync-with-backend";
+} from "../prosemirror-plugin/comms/send-to-backend";
 
-import "./sync-with-editor-trackers";
+import "./comms/listen-to-editor-trackers";
+import {
+  getSendToEditorTracker,
+  SendToEditorTracker,
+} from "./comms/send-to-editor-tracker";
 
 export type TrackedEditor = {
   activelyTracked: boolean;
@@ -14,6 +18,9 @@ export type TrackedEditor = {
   // suggestion > dom path
   label: string;
   log: EditorLogEvent[];
+
+  sendToEditorTracker: SendToEditorTracker;
+  lastPlaygroundRunResult?: { time: number; result: any };
 };
 
 export type BackendDebugInterface = {
@@ -34,6 +41,7 @@ export function registerTrackedEditor(
     id: editorId,
     label: editorId,
     log: [registeredMessage],
+    sendToEditorTracker: getSendToEditorTracker(editorId),
   };
 }
 
@@ -47,12 +55,26 @@ export function receiveTransaction(
       id: editorId,
       label: editorId,
       log: [],
+      sendToEditorTracker: getSendToEditorTracker(editorId),
     };
   }
 
   backendDebugInterface.trackedEditors[editorId].log.unshift(
     transactionMessage
   );
+}
+
+export function receiveLastPlaygroundRunResult(
+  transactionMessage: Extract<
+    EditorTrackerMessage,
+    { type: "last-playground-run-result" }
+  >
+) {
+  const { editorId } = transactionMessage;
+  backendDebugInterface.trackedEditors[editorId].lastPlaygroundRunResult = {
+    time: transactionMessage.time,
+    result: transactionMessage.serializableLastPlaygroundRunResult,
+  };
 }
 
 export function markEditorAsNotActivelyTracked(editorId: string) {

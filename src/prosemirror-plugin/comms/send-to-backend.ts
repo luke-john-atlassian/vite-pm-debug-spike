@@ -1,6 +1,6 @@
 import { EditorState, Transaction } from "prosemirror-state";
-import { serialize } from "../serialisation-util/cycle";
-import { TransactionStack } from "./utils/getTransactionStack";
+import { serialize } from "../../serialisation-util/cycle";
+import { TransactionStack } from "../utils/getTransactionStack";
 
 // note: we skip out of the type system when passing data between environments
 // this works via ts-ignores in this file, and deserialization in sync-with-editor-trackers
@@ -30,13 +30,24 @@ export type RegisteredEvent = {
 
 export type EditorLogEvent = TransactionEvent | RegisteredEvent;
 
+export type LastPlaygroundRunResultEvent = {
+  type: "last-playground-run-result";
+  editorId: string;
+  time: number;
+  serializableLastPlaygroundRunResult: SerializableEditorState;
+};
+
 export type DestroyEvent = {
   type: "destroy";
   editorId: string;
   time: number;
 };
 
-export type EditorTrackerMessage = (EditorLogEvent | DestroyEvent) & {
+export type EditorTrackerMessage = (
+  | EditorLogEvent
+  | LastPlaygroundRunResultEvent
+  | DestroyEvent
+) & {
   pmEditorTrackerEvent: true;
 };
 
@@ -46,8 +57,26 @@ function localPostMessage(
   window.postMessage({ ...message, pmEditorTrackerEvent: true });
 }
 
-export function getBackendNotifier(editorId: string) {
-  const notifier = {
+export function getSendToBackend(editorId: string) {
+  const sendToBackend = {
+    sendLastPlaygroundRunResult({
+      time,
+      result,
+    }: {
+      time: number;
+      result: any;
+    }) {
+      const registeredEvent: LastPlaygroundRunResultEvent = {
+        type: "last-playground-run-result",
+        editorId,
+        time,
+        // @ts-ignore
+        serializableLastPlaygroundRunResult: serialize(result),
+      };
+
+      localPostMessage(registeredEvent);
+    },
+
     logRegistered({ state }: { state: EditorState }) {
       const registeredEvent: RegisteredEvent = {
         type: "registered",
@@ -92,5 +121,5 @@ export function getBackendNotifier(editorId: string) {
     },
   };
 
-  return notifier;
+  return sendToBackend;
 }
