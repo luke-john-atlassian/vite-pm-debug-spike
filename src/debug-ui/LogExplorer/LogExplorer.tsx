@@ -23,6 +23,7 @@ export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
         flexDirection: "row",
         justifyContent: "space-between",
         alignContent: "stretch",
+        overflow: "scroll",
       }}
     >
       <div style={{ overflow: "scroll" }}>
