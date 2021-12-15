@@ -9,9 +9,20 @@ export type TransactionStack = {
 };
 
 function stackLineToStackEntryInfo(stackLine: string) {
-  const [_at, name, filePathWithRoundBrackets] = stackLine.trim().split(" ");
+  // example stackLines
+  //   at Plugin2.<anonymous> (keymap.js:85)
+  //   at input.js:119
+  const [_at, nameOrFilePathWithRoundBrackets, filePathWithRoundBrackets] =
+    stackLine.trim().split(" ");
+  const filePath = (
+    filePathWithRoundBrackets
+      ? filePathWithRoundBrackets
+      : nameOrFilePathWithRoundBrackets
+  ).slice(1, -1);
 
-  const filePath = filePathWithRoundBrackets.slice(1, -1);
+  const name = filePathWithRoundBrackets
+    ? nameOrFilePathWithRoundBrackets
+    : "unknown";
 
   return { name, filePath };
 }

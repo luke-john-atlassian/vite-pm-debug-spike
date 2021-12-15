@@ -79,7 +79,6 @@ export class EditorTracker {
       const transactionPath = getTransactionStack(err.stack);
       this.lastTransactionStack = transactionPath;
     }
-    console.log(rootTr);
   }
 
   // ---
