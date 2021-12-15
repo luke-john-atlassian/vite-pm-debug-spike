@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TrackedEditor } from "../../backend/backend";
 
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntryOverview";
 import type { EditorLogEvent } from "../../prosemirror-plugin/sync-with-backend";
 
-export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
-  const [selectedLogEntry, setSelectedLogEntry] = useState<EditorLogEvent>();
-
-  const currentLogEntry = log.find((logEntry) => {
-    return logEntry.time === selectedLogEntry?.time;
-  });
-
-  function selectLogEntryTime(logEntry: TrackedEditor["log"][number]) {
-    setSelectedLogEntry(logEntry);
-  }
+export function LogExplorer({
+  log,
+  editorId,
+}: {
+  log: TrackedEditor["log"];
+  editorId: string;
+}) {
+  const { selectedLogEntry, currentLogEntry, selectLogEntryTime } =
+    useSelectableLogEntry({ log, editorId });
 
   return (
     <div
@@ -24,6 +23,7 @@ export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
         justifyContent: "space-between",
         alignContent: "stretch",
         overflow: "scroll",
+        height: "100%",
       }}
     >
       <div style={{ overflow: "scroll" }}>
@@ -38,4 +38,34 @@ export function LogExplorer({ log }: { log: TrackedEditor["log"] }) {
       </div>
     </div>
   );
+}
+
+let lastLogSelection: { [editorId: string]: EditorLogEvent | undefined } = {};
+function useSelectableLogEntry({
+  log,
+  editorId,
+}: {
+  log: TrackedEditor["log"];
+  editorId: string;
+}) {
+  const [selectedLogEntry, setSelectedLogEntry] = useState<
+    EditorLogEvent | undefined
+  >(() => {
+    return lastLogSelection[editorId];
+  });
+
+  useEffect(() => {
+    const previousSelection = lastLogSelection[editorId];
+    setSelectedLogEntry(previousSelection || log[0]);
+  }, [editorId]);
+
+  const currentLogEntry = log.find((logEntry) => {
+    return logEntry.time === selectedLogEntry?.time;
+  });
+
+  function selectLogEntryTime(logEntry: TrackedEditor["log"][number]) {
+    lastLogSelection[editorId] = logEntry;
+    setSelectedLogEntry(logEntry);
+  }
+  return { selectedLogEntry, currentLogEntry, selectLogEntryTime };
 }

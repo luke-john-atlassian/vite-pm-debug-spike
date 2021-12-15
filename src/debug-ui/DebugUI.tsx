@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { backendDebugInterface } from "../backend/backend";
+import { Tabs } from "./Components/Layout";
 import { LogExplorer } from "./LogExplorer/LogExplorer";
 
 export function DebugUI() {
@@ -55,9 +56,26 @@ export function DebugUI() {
           </select>
         </div>
       </div>
-      {activeTrackedEditor ? (
-        <LogExplorer log={activeTrackedEditor.log} />
-      ) : null}
+      <Tabs
+        tabs={[
+          { label: "Log Explorer" as const },
+          { label: "Transaction playground" as const },
+        ]}
+        contentComponent={(tab) => {
+          if (!activeTrackedEditor) {
+            return null;
+          }
+          if (tab.label === "Log Explorer") {
+            return (
+              <LogExplorer
+                log={activeTrackedEditor.log}
+                editorId={activeTrackedEditor.id}
+              />
+            );
+          }
+          return null;
+        }}
+      />
     </div>
   );
 }
