@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
 import { schema } from "prosemirror-schema-basic";
-import { EditorState } from "prosemirror-state";
+import { EditorState, Transaction } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import { baseKeymap } from "prosemirror-commands";
+import { baseKeymap, toggleMark } from "prosemirror-commands";
 import { keymap } from "prosemirror-keymap";
 import { undo, redo, history } from "prosemirror-history";
 
@@ -21,6 +21,7 @@ export function Editor() {
         history(),
         keymap({ "Mod-z": undo, "Mod-y": redo }),
         keymap(baseKeymap),
+        keymap({ "Mod-b": toggleMark(schema.marks.strong) }),
         devtoolsPlugin,
       ],
     });
