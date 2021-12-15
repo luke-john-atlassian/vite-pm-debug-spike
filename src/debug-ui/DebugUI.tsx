@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { backendDebugInterface, TrackedEditor } from "../backend/backend";
-import { TrackedEditorUI } from "./TrackedEditor/TrackedEditor";
-
+import { backendDebugInterface } from "../backend/backend";
+import { LogExplorer } from "./LogExplorer/LogExplorer";
 export function DebugUI() {
   const [syncBackendDebugInterface, setSyncBackendDebugInterface] = useState(
     backendDebugInterface
@@ -28,15 +27,31 @@ export function DebugUI() {
   }, [listOfTrackedEditors.length !== 0]);
 
   return (
-    <div>
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        overflow: "hidden",
+
+        display: "grid",
+        gridTemplateColumns: "100%",
+        gridTemplateRows: "20px 1fr",
+        gridRowGap: "0px",
+        justifyItems: "stretch",
+        alignItems: "stretch",
+      }}
+    >
       <div
         style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
+          borderBottom: "1px solid black",
         }}
       >
-        <div>Debug ui</div>
+        <div>
+          <h1>ProseMirror debug tool</h1>
+        </div>
         <div>
           <select
             onChange={(e) => {
@@ -61,7 +76,7 @@ export function DebugUI() {
         </div>
       </div>
       {activeTrackedEditor ? (
-        <TrackedEditorUI trackedEditor={activeTrackedEditor} />
+        <LogExplorer log={activeTrackedEditor.log} />
       ) : null}
     </div>
   );

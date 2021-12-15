@@ -1,7 +1,7 @@
 import type * as React from "react";
 import { Fragment } from "react";
-import { TrackedEditor } from "../../../backend/backend";
-import { EditorLogEvent } from "../../../prosemirror-plugin/sync-with-backend";
+import { TrackedEditor } from "../../backend/backend";
+import { EditorLogEvent } from "../../prosemirror-plugin/sync-with-backend";
 
 export function LogList({
   log,
@@ -14,7 +14,7 @@ export function LogList({
 }) {
   return (
     <Fragment>
-      <h3>Editor History</h3>
+      <h2>Editor History</h2>
       <table>
         <thead>
           <tr>

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import JSONTree from "react-json-tree";
 
-import { TrackedEditor } from "../../../backend/backend";
+import { TrackedEditor } from "../../backend/backend";
 
 export function LogEntryOverview({
   entry,
