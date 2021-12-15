@@ -20,9 +20,12 @@ export function DebugUI() {
   const listOfTrackedEditors = Object.values(
     syncBackendDebugInterface.trackedEditors
   );
-  const activeTrackedEditor = listOfTrackedEditors.length
-    ? listOfTrackedEditors[0]
-    : null;
+  const [activeTrackedEditor, setActiveTrackedEditor] = useState(() => {
+    return listOfTrackedEditors.length ? listOfTrackedEditors[0] : null;
+  });
+  useEffect(() => {
+    setActiveTrackedEditor(listOfTrackedEditors[0]);
+  }, [listOfTrackedEditors.length !== 0]);
 
   return (
     <div>
@@ -35,10 +38,20 @@ export function DebugUI() {
       >
         <div>Debug ui</div>
         <div>
-          <select>
+          <select
+            onChange={(e) => {
+              const relatedEditor = listOfTrackedEditors.find(
+                (trackedEditor) => {
+                  return trackedEditor.id === e.currentTarget.value;
+                }
+              )!;
+
+              setActiveTrackedEditor(relatedEditor);
+            }}
+          >
             {listOfTrackedEditors.map((trackedEditor) => {
               return (
-                <option key={trackedEditor.id}>
+                <option key={trackedEditor.id} value={trackedEditor.id}>
                   {trackedEditor.label}
                   {trackedEditor.activelyTracked ? null : " (destroyed)"}
                 </option>

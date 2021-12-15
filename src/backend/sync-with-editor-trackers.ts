@@ -37,6 +37,7 @@ export function editorTrackerEventHandler(event: any) {
         serializableState: deserialize(message.serializableState),
       };
       registerTrackedEditor(messageWithDeserializedValues);
+      break;
     }
     case "destroy": {
       markEditorAsNotActivelyTracked(message.editorId);
