@@ -80,11 +80,68 @@ export function getTransactionStack(stack: string): TransactionStack {
     at MutationObserver.DOMObserver2.observer (domobserver.js:50)
   */
   if (lastStackLine.includes(".observer")) {
-    const handleDOMChangeLine = stackLines.findIndex((line) =>
+    const handleDOMChangeLineIndex = stackLines.findIndex((line) =>
       line.includes(".handleDOMChange")
     );
     return {
-      path: [stackLineToStackEntryInfo(stackLines[handleDOMChangeLine])],
+      path: [
+        stackLineToStackEntryInfo(stackLines[stackLines.length - 1]),
+        stackLineToStackEntryInfo(stackLines[handleDOMChangeLineIndex]),
+      ],
+      source: stack,
+    };
+  }
+
+  /* Error
+    at EditorTracker.editorState_applyTransaction (EditorTracker.ts:77)
+    at EditorState2.editorState.applyTransaction (EditorTracker.ts:65)
+    at EditorState2.apply6 [as apply] (state.js:96)
+    at EditorView2.dispatch (index.js:400)
+    at readDOMChange (domchange.js:84)
+    at DOMObserver2.handleDOMChange (input.js:35)
+    at DOMObserver2.flush (domobserver.js:176)
+    at DOMObserver2.onSelectionChange (domobserver.js:122)
+  */
+  if (lastStackLine.includes(".onSelectionChange")) {
+    const handleDOMChangeLineIndex = stackLines.findIndex((line) =>
+      line.includes(".handleDOMChange")
+    );
+    return {
+      path: [
+        stackLineToStackEntryInfo(stackLines[stackLines.length - 1]),
+        stackLineToStackEntryInfo(stackLines[handleDOMChangeLineIndex]),
+      ],
+      source: stack,
+    };
+  }
+
+  /* Error
+    at EditorTracker.editorState_applyTransaction (EditorTracker.ts:77)
+    at EditorState2.editorState.applyTransaction (EditorTracker.ts:65)
+    at EditorState2.apply6 [as apply] (state.js:96)
+    at EditorView2.dispatch (index.js:400)
+    at handlers.copy.editHandlers.cut (input.js:533)
+    at HTMLDivElement.view.dom.addEventListener.view.eventHandlers.<computed> (input.js:46)
+  */
+  if (
+    lastStackLine.includes(
+      "HTMLDivElement.view.dom.addEventListener.view.eventHandlers."
+    )
+  ) {
+    const dispatchLineIndex = stackLines.findIndex((line) =>
+      line.includes(".dispatch")
+    );
+
+    const linesBetweenDispatchAndSourcePlugin = stackLines.slice(
+      dispatchLineIndex + 1,
+      stackLines.length - 1
+    );
+
+    return {
+      path: [
+        stackLineToStackEntryInfo(stackLines[stackLines.length - 1]),
+        ...linesBetweenDispatchAndSourcePlugin.map(stackLineToStackEntryInfo),
+      ],
       source: stack,
     };
   }
