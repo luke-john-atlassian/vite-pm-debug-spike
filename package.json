@@ -6,6 +6,11 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "main": "dist/vite-pm-debug-spike.es.js",
+  "module": "./dist/vite-pm-debug-spike.es.js",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
     "@types/prosemirror-commands": "^1.0.4",
     "@types/prosemirror-history": "^1.0.3",
