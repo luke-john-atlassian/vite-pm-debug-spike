@@ -10,7 +10,9 @@
     "build"
   ],
   "exports": {
-    ".": "./src/index.ts"
+    "./prosemirror-plugin/plugin": "./build/prosemirror-plugin/plugin.ts"
+    "./debug-ui/DebugUI": "./build/debug-ui/DebugUI.tsx"
+    "./backend/backend": "./build/backend/backend.ts"
   },
   "dependencies": {
     "@types/prosemirror-commands": "^1.0.4",
