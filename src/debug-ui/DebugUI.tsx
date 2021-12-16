@@ -1,6 +1,8 @@
 import { useAppStateContextValue } from "./AppStateProvider";
-import { Tabs, ToolbarAndContentContainer } from "./Components/Layout";
+import { SideTabs } from "./Components/Layout";
+
 import {
+  ToolbarAndContentContainer,
   Toolbar,
   ToolbarGroup,
   ToolbarHeading,
@@ -46,7 +48,7 @@ export function DebugUI() {
           </ToolbarSelect>
         </ToolbarGroup>
       </Toolbar>
-      <Tabs
+      <SideTabs
         tabs={[
           { label: "Log Explorer" as const },
           { label: "Playground" as const },

@@ -114,6 +114,8 @@ export function getSendToBackend(editorId: string) {
         serializableState: serialize({
           doc: state.doc,
           selection: state.selection,
+          // @ts-ignore
+          config: state.config,
         }),
       };
 

@@ -1,5 +1,6 @@
 import { Fragment, Node as ProsemirrorNode } from "prosemirror-model";
 import { SerializableEditorState } from "../../../../prosemirror-plugin/comms/send-to-backend";
+import { useNodeSelectionContextValue } from "./NodeSelectionContext";
 
 function BlockNodeContent({
   parentNodeContent,
@@ -51,9 +52,15 @@ function Marks({ marks }: { marks: ProsemirrorNode["marks"] }) {
 }
 
 function BlockNode({ node }: { node: ProsemirrorNode }) {
+  const { selectNode } = useNodeSelectionContextValue();
   if (node.type.name === "text") {
     return (
-      <span>
+      <span
+        onClick={(event) => {
+          event.stopPropagation();
+          selectNode(node);
+        }}
+      >
         {node.text}
         <Marks marks={node.marks} />
       </span>
@@ -62,11 +69,16 @@ function BlockNode({ node }: { node: ProsemirrorNode }) {
 
   if (node.content.size) {
     return (
-      <>
+      <div
+        onClick={(event) => {
+          event.stopPropagation();
+          selectNode(node);
+        }}
+      >
         <span>{node.type.name}(</span>
         <BlockNodeContent parentNodeContent={node.content} />
         <span>)</span>
-      </>
+      </div>
     );
   }
 

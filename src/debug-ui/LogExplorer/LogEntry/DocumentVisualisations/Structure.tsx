@@ -7,6 +7,7 @@ import { SerializableEditorState } from "../../../../prosemirror-plugin/comms/se
 
 import { buildColors } from "./Structure_buildColors";
 import { getNodeSize } from "./getNodeSize";
+import { useNodeSelectionContextValue } from "./NodeSelectionContext";
 
 const jsonTreeTheme = {
   scheme: "monokai",
@@ -72,7 +73,7 @@ function Center({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        flexGrow: 1,
+        flex: 1,
         padding: "3px 9px",
         whiteSpace: "pre",
       }}
@@ -195,7 +196,7 @@ export function InlineNode(props) {
     <div
       onClick={() => props.onNodeSelected({ node })}
       style={{
-        flexGrow: 1,
+        flex: 1,
         marginBottom: "3px",
         display: "flex",
         boxSizing: "border-box",
@@ -222,12 +223,16 @@ export function Structure({
   // @ts-ignore
   const nodeColors = buildColors(editorState.config.schema);
 
+  const { selectNode } = useNodeSelectionContextValue();
+
   return (
     <BlockNode
       colors={nodeColors}
       node={editorState.doc}
       startPos={0}
-      onNodeSelected={() => {}}
+      onNodeSelected={({ node }: any) => {
+        selectNode(node);
+      }}
     />
   );
 }

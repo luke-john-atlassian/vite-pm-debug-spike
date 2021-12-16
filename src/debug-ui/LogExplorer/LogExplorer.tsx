@@ -5,8 +5,13 @@ import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-back
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntry/LogEntryOverview";
 import { useAppStateContextValue } from "../AppStateProvider";
-import { ToolbarAndContentContainer } from "../Components/Layout";
-import { Toolbar, ToolbarGroup, ToolbarHeading } from "../Components/Toolbar";
+
+import {
+  Toolbar,
+  ToolbarAndContentContainer,
+  ToolbarGroup,
+  ToolbarHeading,
+} from "../Components/Toolbar";
 import { ResizerWidget, useResize } from "../Components/ResizablePanes";
 
 export function LogExplorer() {
@@ -47,7 +52,7 @@ export function LogExplorer() {
           />
         </div>
         <ResizerWidget {...resizerProps} />
-        <div style={{ flexGrow: 1 }}>
+        <div style={{ flex: 1 }}>
           <LogEntryOverview entry={currentLogEntry} />
         </div>
       </div>
