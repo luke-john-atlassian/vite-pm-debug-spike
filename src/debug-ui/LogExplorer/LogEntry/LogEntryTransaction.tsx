@@ -13,6 +13,7 @@ import { Structure } from "./DocumentVisualisations/Structure";
 import { EnhancedToString } from "./DocumentVisualisations/EnhancedToString";
 import { StateDetails } from "./StateDetails";
 import { NodeSelectionContextProvider } from "./DocumentVisualisations/NodeSelectionContext";
+import { TransactionDetails } from "./TransactionDetails/TransactionDetails";
 
 export function LogEntryTransaction({
   transactionEvent,
@@ -20,7 +21,7 @@ export function LogEntryTransaction({
   transactionEvent: TransactionEvent;
 }) {
   const { size, paneProps, resizerProps } = useResize({
-    initialSize: 500,
+    initialSize: 800,
     sideToResize: "left",
   });
 
@@ -53,6 +54,7 @@ export function LogEntryTransaction({
                   { label: "Classic" as const },
                   { label: "PM doc.toString()" as const },
                   { label: "Enhanced toString" as const },
+                  { label: "Details" as const },
                 ]}
                 contentComponent={(tab) => {
                   if (tab.label === "Classic") {
@@ -80,6 +82,11 @@ export function LogEntryTransaction({
                           editorState={transactionEvent.serializableState}
                         />
                       </ContentArea>
+                    );
+                  }
+                  if (tab.label === "Details") {
+                    return (
+                      <TransactionDetails transactionEvent={transactionEvent} />
                     );
                   }
                   return null;

@@ -20,6 +20,7 @@ export function useResize({
   initialSize,
   sideToResize,
 }: {
+  // TODO accept percentages (calculate init using parent position)
   initialSize: number;
   sideToResize: "left" | "right";
 }) {
