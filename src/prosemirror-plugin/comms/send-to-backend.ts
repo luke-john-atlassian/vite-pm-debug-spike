@@ -17,6 +17,9 @@ export type TransactionEvent = {
   editorId: string;
   time: number;
   stack: TransactionStack;
+  documentRepresentations: {
+    string: string;
+  };
   serializableTransaction: SerializableTransaction;
   serializableState: SerializableEditorState;
 };
@@ -102,6 +105,9 @@ export function getSendToBackend(editorId: string) {
         editorId,
         time: transaction.time,
         stack,
+        documentRepresentations: {
+          string: state.doc.toString(),
+        },
         // @ts-ignore
         serializableTransaction: serialize(transaction),
         // @ts-ignore

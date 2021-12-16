@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import JSONTree from "react-json-tree";
 
 import { TrackedEditor } from "../../backend/backend";
 import { SendToEditorTracker } from "../../backend/comms/send-to-editor-tracker";
 import { useAppStateContextValue } from "../AppStateProvider";
-import { JSONTreeTheme } from "../LogExplorer/LogEntryOverview";
+import { JSONTree } from "../Components/JSONTree";
 
 const preCode = `
 function runTransaction(editorView, editorState) {
@@ -51,12 +50,7 @@ export function Playground() {
         <div style={{ overflow: "scroll", flex: "1" }}>
           <p>result</p>
           {typeof result === "object" ? (
-            <JSONTree
-              data={result}
-              theme={JSONTreeTheme}
-              invertTheme={false}
-              hideRoot
-            />
+            <JSONTree data={result} invertTheme={false} hideRoot />
           ) : (
             result
           )}

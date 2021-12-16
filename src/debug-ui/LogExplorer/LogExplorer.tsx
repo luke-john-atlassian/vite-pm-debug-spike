@@ -3,7 +3,7 @@ import { TrackedEditor } from "../../backend/backend";
 import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
 import { LogList } from "./LogList";
-import { LogEntryOverview } from "./LogEntryOverview";
+import { LogEntryOverview } from "./LogEntry/LogEntryOverview";
 import { useAppStateContextValue } from "../AppStateProvider";
 import { ToolbarAndContentContainer } from "../Components/Layout";
 import { Toolbar, ToolbarGroup, ToolbarHeading } from "../Components/Toolbar";
