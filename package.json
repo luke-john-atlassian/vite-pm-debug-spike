@@ -1,10 +1,18 @@
 {
   "name": "vite-pm-debug-spike",
-  "version": "0.0.0",
+  "version": "0.0.4",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
+  },
+  "files": [
+    "build"
+  ],
+  "exports": {
+    "./prosemirror-plugin/plugin": "./build/prosemirror-plugin/plugin.js"
+    "./debug-ui/DebugUI": "./build/debug-ui/DebugUI.js"
+    "./backend/backend": "./build/backend/backend.js"
   },
   "dependencies": {
     "@types/prosemirror-commands": "^1.0.4",
