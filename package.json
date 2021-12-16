@@ -10,8 +10,8 @@
     "build"
   ],
   "exports": {
-    "./prosemirror-plugin/plugin": "./build/prosemirror-plugin/plugin.js"
-    "./debug-ui/DebugUI": "./build/debug-ui/DebugUI.js"
+    "./prosemirror-plugin/plugin": "./build/prosemirror-plugin/plugin.js",
+    "./debug-ui/DebugUI": "./build/debug-ui/DebugUI.js",
     "./backend/backend": "./build/backend/backend.js"
   },
   "dependencies": {
