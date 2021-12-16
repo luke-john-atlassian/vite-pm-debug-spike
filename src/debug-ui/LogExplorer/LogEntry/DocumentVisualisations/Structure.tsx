@@ -7,6 +7,7 @@ import { SerializableEditorState } from "../../../../prosemirror-plugin/comms/se
 
 import { buildColors } from "./Structure_buildColors";
 import { getNodeSize } from "./getNodeSize";
+import { useNodeSelectionContextValue } from "./NodeSelectionContext";
 
 const jsonTreeTheme = {
   scheme: "monokai",
@@ -222,12 +223,16 @@ export function Structure({
   // @ts-ignore
   const nodeColors = buildColors(editorState.config.schema);
 
+  const { selectNode } = useNodeSelectionContextValue();
+
   return (
     <BlockNode
       colors={nodeColors}
       node={editorState.doc}
       startPos={0}
-      onNodeSelected={() => {}}
+      onNodeSelected={({ node }: any) => {
+        selectNode(node);
+      }}
     />
   );
 }

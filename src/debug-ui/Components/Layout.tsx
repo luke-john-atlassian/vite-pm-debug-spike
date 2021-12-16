@@ -178,6 +178,7 @@ export function TopTabs<Tabs extends TabInfo[]>({
           return (
             <button
               style={{
+                border: "none",
                 // sizes+colors copied from chrome devtools
                 backgroundColor: "rgba(0, 0, 0, 0)",
                 color: "rgb(51, 51, 51)",
@@ -193,7 +194,6 @@ export function TopTabs<Tabs extends TabInfo[]>({
 
                 height: "23px",
                 cursor: "pointer",
-                border: "none",
               }}
               key={tab.label}
               onClick={() => handleTabClick(tab)}

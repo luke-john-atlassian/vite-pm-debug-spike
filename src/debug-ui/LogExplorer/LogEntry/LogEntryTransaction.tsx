@@ -7,11 +7,12 @@ import {
   ToolbarHeading,
 } from "../../Components/Toolbar";
 import { ResizerWidget, useResize } from "../../Components/ResizablePanes";
+import { TopTabs, ContentArea } from "../../Components/Layout";
 
 import { Structure } from "./DocumentVisualisations/Structure";
 import { EnhancedToString } from "./DocumentVisualisations/EnhancedToString";
 import { StateDetails } from "./StateDetails";
-import { TopTabs, ContentArea } from "../../Components/Layout";
+import { NodeSelectionContextProvider } from "./DocumentVisualisations/NodeSelectionContext";
 
 export function LogEntryTransaction({
   transactionEvent,
@@ -33,65 +34,67 @@ export function LogEntryTransaction({
         </ToolbarGroup>
       </Toolbar>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignContent: "stretch",
-          overflow: "scroll",
-          height: "100%",
-        }}
-        {...paneProps}
-      >
-        <div style={{ overflow: "scroll", width: size, fontSize: "13px" }}>
-          <div style={{ width: "100%", height: "100%" }}>
-            <TopTabs
-              tabs={[
-                { label: "Classic" as const },
-                { label: "PM doc.toString()" as const },
-                { label: "Enhanced toString" as const },
-              ]}
-              contentComponent={(tab) => {
-                if (tab.label === "Classic") {
-                  return (
-                    <ContentArea>
-                      <Structure
-                        editorState={transactionEvent.serializableState}
-                      />
-                    </ContentArea>
-                  );
-                }
-                if (tab.label === "PM doc.toString()") {
-                  return (
-                    <ContentArea>
-                      <span>
-                        {transactionEvent.documentRepresentations.string}
-                      </span>
-                    </ContentArea>
-                  );
-                }
-                if (tab.label === "Enhanced toString") {
-                  return (
-                    <ContentArea>
-                      <EnhancedToString
-                        editorState={transactionEvent.serializableState}
-                      />
-                    </ContentArea>
-                  );
-                }
-                return null;
-              }}
+      <NodeSelectionContextProvider transactionTime={transactionEvent.time}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "stretch",
+            overflow: "scroll",
+            height: "100%",
+          }}
+          {...paneProps}
+        >
+          <div style={{ overflow: "scroll", width: size, fontSize: "13px" }}>
+            <div style={{ width: "100%", height: "100%" }}>
+              <TopTabs
+                tabs={[
+                  { label: "Classic" as const },
+                  { label: "PM doc.toString()" as const },
+                  { label: "Enhanced toString" as const },
+                ]}
+                contentComponent={(tab) => {
+                  if (tab.label === "Classic") {
+                    return (
+                      <ContentArea>
+                        <Structure
+                          editorState={transactionEvent.serializableState}
+                        />
+                      </ContentArea>
+                    );
+                  }
+                  if (tab.label === "PM doc.toString()") {
+                    return (
+                      <ContentArea>
+                        <span>
+                          {transactionEvent.documentRepresentations.string}
+                        </span>
+                      </ContentArea>
+                    );
+                  }
+                  if (tab.label === "Enhanced toString") {
+                    return (
+                      <ContentArea>
+                        <EnhancedToString
+                          editorState={transactionEvent.serializableState}
+                        />
+                      </ContentArea>
+                    );
+                  }
+                  return null;
+                }}
+              />
+            </div>
+          </div>
+          <ResizerWidget {...resizerProps} />
+          <div style={{ flex: 1, overflow: "scroll" }}>
+            <StateDetails
+              serializableEditorState={transactionEvent.serializableState}
             />
           </div>
         </div>
-        <ResizerWidget {...resizerProps} />
-        <div style={{ flex: 1, overflow: "scroll" }}>
-          <StateDetails
-            serializableEditorState={transactionEvent.serializableState}
-          />
-        </div>
-      </div>
+      </NodeSelectionContextProvider>
     </ToolbarAndContentContainer>
   );
 }
