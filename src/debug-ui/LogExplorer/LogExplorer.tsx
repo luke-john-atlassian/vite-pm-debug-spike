@@ -7,6 +7,7 @@ import { LogEntryOverview } from "./LogEntryOverview";
 import { useAppStateContextValue } from "../AppStateProvider";
 import { ToolbarAndContentContainer } from "../Components/Layout";
 import { Toolbar, ToolbarGroup, ToolbarHeading } from "../Components/Toolbar";
+import { ResizerWidget, useResize } from "../Components/ResizablePanes";
 
 export function LogExplorer() {
   const { activeTrackedEditor } = useAppStateContextValue();
@@ -14,6 +15,11 @@ export function LogExplorer() {
 
   const { selectedLogEntry, currentLogEntry, selectLogEntryTime } =
     useSelectableLogEntry({ log, editorId });
+
+  const { size, paneProps, resizerRef, resizerProps } = useResize({
+    initialSize: 500,
+    sideToResize: "left",
+  });
 
   return (
     <ToolbarAndContentContainer>
@@ -31,14 +37,16 @@ export function LogExplorer() {
           overflow: "scroll",
           height: "100%",
         }}
+        {...paneProps}
       >
-        <div style={{ overflow: "scroll" }}>
+        <div style={{ overflow: "scroll", width: size }}>
           <LogList
             log={log}
             selectedLogEntry={selectedLogEntry}
             setSelectedLogEntry={selectLogEntryTime}
           />
         </div>
+        <ResizerWidget ref={resizerRef} {...resizerProps} />
         <div style={{ flexGrow: 1 }}>
           <LogEntryOverview entry={currentLogEntry} />
         </div>

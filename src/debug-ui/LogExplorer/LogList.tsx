@@ -31,6 +31,7 @@ export function LogList({
     <Fragment>
       <table
         style={{
+          width: "100%",
           // sizes+colors copied from chrome devtools
           borderSpacing: 0,
           fontFamily: "sans-serif",
