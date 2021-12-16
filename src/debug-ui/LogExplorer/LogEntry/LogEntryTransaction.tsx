@@ -8,6 +8,7 @@ import {
   ToolbarHeading,
 } from "../../Components/Toolbar";
 import { Structure } from "./DocumentVisualisations/Structure";
+import { EnhancedToString } from "./DocumentVisualisations/EnhancedToString";
 
 export function LogEntryTransaction({
   transactionEvent,
@@ -23,8 +24,9 @@ export function LogEntryTransaction({
           </ToolbarHeading>
         </ToolbarGroup>
       </Toolbar>
-      <div>
+      <div style={{ overflow: "scroll" }}>
         <pre>{transactionEvent.documentRepresentations.string}</pre>
+        <EnhancedToString editorState={transactionEvent.serializableState} />
         <Structure editorState={transactionEvent.serializableState} />
         <JSONTree
           data={transactionEvent.serializableState}
