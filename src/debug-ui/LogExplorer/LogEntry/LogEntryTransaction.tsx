@@ -7,6 +7,7 @@ import {
   ToolbarGroup,
   ToolbarHeading,
 } from "../../Components/Toolbar";
+import { Structure } from "./DocumentVisualisations/Structure";
 
 export function LogEntryTransaction({
   transactionEvent,
@@ -24,6 +25,7 @@ export function LogEntryTransaction({
       </Toolbar>
       <div>
         <pre>{transactionEvent.documentRepresentations.string}</pre>
+        <Structure editorState={transactionEvent.serializableState} />
         <JSONTree
           data={transactionEvent.serializableState}
           invertTheme={false}

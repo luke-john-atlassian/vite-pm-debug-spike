@@ -16,7 +16,7 @@ export function LogExplorer() {
   const { selectedLogEntry, currentLogEntry, selectLogEntryTime } =
     useSelectableLogEntry({ log, editorId });
 
-  const { size, paneProps, resizerRef, resizerProps } = useResize({
+  const { size, paneProps, resizerProps } = useResize({
     initialSize: 500,
     sideToResize: "left",
   });
@@ -46,7 +46,7 @@ export function LogExplorer() {
             setSelectedLogEntry={selectLogEntryTime}
           />
         </div>
-        <ResizerWidget ref={resizerRef} {...resizerProps} />
+        <ResizerWidget {...resizerProps} />
         <div style={{ flexGrow: 1 }}>
           <LogEntryOverview entry={currentLogEntry} />
         </div>
