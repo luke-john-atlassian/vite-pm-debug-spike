@@ -3,7 +3,7 @@ import { TrackedEditor } from "../../backend/backend";
 import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
 import { LogList } from "./LogList";
-import { LogEntryOverview } from "./LogEntryOverview";
+import { LogEntryOverview } from "./LogEntry/LogEntryOverview";
 import { useAppStateContextValue } from "../AppStateProvider";
 import { ToolbarAndContentContainer } from "../Components/Layout";
 import { Toolbar, ToolbarGroup, ToolbarHeading } from "../Components/Toolbar";
@@ -16,7 +16,7 @@ export function LogExplorer() {
   const { selectedLogEntry, currentLogEntry, selectLogEntryTime } =
     useSelectableLogEntry({ log, editorId });
 
-  const { size, paneProps, resizerRef, resizerProps } = useResize({
+  const { size, paneProps, resizerProps } = useResize({
     initialSize: 500,
     sideToResize: "left",
   });
@@ -46,7 +46,7 @@ export function LogExplorer() {
             setSelectedLogEntry={selectLogEntryTime}
           />
         </div>
-        <ResizerWidget ref={resizerRef} {...resizerProps} />
+        <ResizerWidget {...resizerProps} />
         <div style={{ flexGrow: 1 }}>
           <LogEntryOverview entry={currentLogEntry} />
         </div>
