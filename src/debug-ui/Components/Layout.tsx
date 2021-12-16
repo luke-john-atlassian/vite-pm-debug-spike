@@ -31,11 +31,33 @@ export function Tabs<Tabs extends TabInfo[]>({
         style={{
           display: "flex",
           flexDirection: "column",
+
+          // sizes+colors copied from chrome devtools (Memory)
+          background: "rgb(241, 243, 244)",
+          borderRight: "1px solid rgb(202, 205, 209)",
+          width: "130px",
         }}
       >
         {tabs.map((tab) => {
+          const isActiveTab = tab.label === activeTab.label;
+
           return (
             <button
+              style={{
+                // sizes+colors copied from chrome devtools (Memory)
+                ...(isActiveTab
+                  ? {
+                      backgroundColor: "rgb(218, 218, 218)",
+                      color: "rgb(90, 90, 90)",
+                    }
+                  : {
+                      backgroundColor: "rgba(0, 0, 0, 0)",
+                      color: "rgb(160 165 169);",
+                    }),
+                height: "36px",
+                cursor: "pointer",
+                border: "none",
+              }}
               key={tab.label}
               onClick={() => handleTabClick(tab)}
               role="tab"
