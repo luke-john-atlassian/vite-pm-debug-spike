@@ -6,8 +6,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "main": "dist/vite-pm-debug-spike.es.js",
-  "module": "./dist/vite-pm-debug-spike.es.js",
+  "files": ["build"],
   "exports": {
     ".": "./src/index.ts"
   },
