@@ -4,14 +4,12 @@ import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-back
 
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntryOverview";
+import { useAppStateContextValue } from "../AppStateProvider";
 
-export function LogExplorer({
-  log,
-  editorId,
-}: {
-  log: TrackedEditor["log"];
-  editorId: string;
-}) {
+export function LogExplorer() {
+  const { activeTrackedEditor } = useAppStateContextValue();
+  const { log, id: editorId } = activeTrackedEditor!;
+
   const { selectedLogEntry, currentLogEntry, selectLogEntryTime } =
     useSelectableLogEntry({ log, editorId });
 

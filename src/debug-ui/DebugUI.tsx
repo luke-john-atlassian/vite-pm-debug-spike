@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { backendDebugInterface } from "../backend/backend";
+
+import { useAppStateContextValue } from "./AppStateProvider";
 import { Tabs } from "./Components/Layout";
 import {
   ToolbarGroup,
@@ -12,7 +13,7 @@ import { Playground } from "./Playground/Playground";
 
 export function DebugUI() {
   const { listOfTrackedEditors, activeTrackedEditor, setActiveTrackedEditor } =
-    useListOfTrackedEditors();
+    useAppStateContextValue();
 
   return (
     <div
@@ -81,66 +82,14 @@ export function DebugUI() {
             return null;
           }
           if (tab.label === "Log Explorer") {
-            return (
-              <LogExplorer
-                log={activeTrackedEditor.log}
-                editorId={activeTrackedEditor.id}
-              />
-            );
+            return <LogExplorer />;
           }
           if (tab.label === "Playground") {
-            return (
-              <Playground
-                editorId={activeTrackedEditor.id}
-                lastPlaygroundRunResult={
-                  activeTrackedEditor.lastPlaygroundRunResult
-                }
-                runPlaygroundScript={
-                  activeTrackedEditor.sendToEditorTracker.runPlaygroundScript
-                }
-              />
-            );
+            return <Playground />;
           }
           return null;
         }}
       />
     </div>
   );
-}
-
-function useListOfTrackedEditors() {
-  const liveBackendInterface = useLiveBackendInterface();
-  const listOfTrackedEditors = Object.values(
-    liveBackendInterface.trackedEditors
-  );
-  const [activeTrackedEditor, setActiveTrackedEditor] = useState(() => {
-    return listOfTrackedEditors.length ? listOfTrackedEditors[0] : null;
-  });
-  useEffect(() => {
-    setActiveTrackedEditor(listOfTrackedEditors[0]);
-  }, [listOfTrackedEditors.length !== 0]);
-
-  return {
-    listOfTrackedEditors,
-    activeTrackedEditor,
-    setActiveTrackedEditor,
-  };
-}
-
-function useLiveBackendInterface() {
-  const [liveBackendDebugInterface, setLiveBackendDebugInterface] = useState(
-    backendDebugInterface
-  );
-
-  useEffect(() => {
-    setInterval(() => {
-      setLiveBackendDebugInterface({
-        trackedEditors: {
-          ...backendDebugInterface.trackedEditors,
-        },
-      });
-    }, 100);
-  }, []);
-
-  return liveBackendDebugInterface;
 }

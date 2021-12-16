@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DebugUI } from "./debug-ui/DebugUI";
+import { DebugApp } from "./debug-ui/DebugApp";
 import { Editor } from "./Editor";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
       <div
         style={{ width: "100%", height: "500px", border: "1px solid black" }}
       >
-        <DebugUI />
+        <DebugApp />
       </div>
     </div>
   );

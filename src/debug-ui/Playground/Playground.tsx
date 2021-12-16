@@ -3,21 +3,22 @@ import JSONTree from "react-json-tree";
 
 import { TrackedEditor } from "../../backend/backend";
 import { SendToEditorTracker } from "../../backend/comms/send-to-editor-tracker";
+import { useAppStateContextValue } from "../AppStateProvider";
 import { JSONTreeTheme } from "../LogExplorer/LogEntryOverview";
 
 const preCode = `
 function runTransaction(editorView, editorState) {
 `.trim();
 
-export function Playground({
-  lastPlaygroundRunResult,
-  runPlaygroundScript,
-  editorId,
-}: {
-  lastPlaygroundRunResult: TrackedEditor["lastPlaygroundRunResult"];
-  runPlaygroundScript: SendToEditorTracker["runPlaygroundScript"];
-  editorId: string;
-}) {
+export function Playground() {
+  const { activeTrackedEditor } = useAppStateContextValue();
+
+  const {
+    id: editorId,
+    lastPlaygroundRunResult,
+    sendToEditorTracker: { runPlaygroundScript },
+  } = activeTrackedEditor!;
+
   const { code, setCode, runCode, result } = useCode({
     lastPlaygroundRunResult,
     runPlaygroundScript,
