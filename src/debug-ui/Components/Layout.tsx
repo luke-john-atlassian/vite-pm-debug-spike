@@ -1,6 +1,31 @@
 import type React from "react";
 import { useState } from "react";
 
+export function ToolbarAndContentContainer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        overflow: "hidden",
+
+        display: "grid",
+        gridTemplateColumns: "100%",
+        gridTemplateRows: "27px 1fr",
+        gridRowGap: "1px",
+        justifyItems: "stretch",
+        alignItems: "stretch",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 type TabInfo = { label: string };
 
 export function Tabs<Tabs extends TabInfo[]>({
@@ -52,7 +77,7 @@ export function Tabs<Tabs extends TabInfo[]>({
                     }
                   : {
                       backgroundColor: "rgba(0, 0, 0, 0)",
-                      color: "rgb(160 165 169);",
+                      color: "rgb(160 165 169)",
                     }),
                 height: "36px",
                 cursor: "pointer",

@@ -1,5 +1,25 @@
 import React from "react";
 
+export function Toolbar({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottom: "1px solid black",
+
+        // sizes+colors copied from chrome devtools
+        backgroundColor: "rgb(241, 243, 244)",
+        borderBottomColor: "rgb(202, 205, 209)",
+        height: "27px",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function ToolbarGroup({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -26,6 +46,7 @@ export function ToolbarHeading({
         fontFamily: "sans-serif",
         fontWeight: "400",
         padding: "0 1rem",
+        margin: 0,
       }}
     >
       {children}

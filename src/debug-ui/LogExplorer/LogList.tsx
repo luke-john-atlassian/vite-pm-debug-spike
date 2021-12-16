@@ -4,6 +4,15 @@ import { Fragment } from "react";
 import { TrackedEditor } from "../../backend/backend";
 import { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
+const tableHeaderStyle = {
+  fontWeight: 400,
+  fontSize: "13px",
+  color: "rgb(51, 51, 51)",
+  borderBottom: "1px solid rgb(202, 205, 209)",
+  borderRight: "1px solid rgb(202, 205, 209)",
+  height: "20px",
+};
+
 export function LogList({
   log,
   selectedLogEntry,
@@ -13,30 +22,42 @@ export function LogList({
   selectedLogEntry?: EditorLogEvent;
   setSelectedLogEntry: (logEntry: EditorLogEvent) => void;
 }) {
+  const oddStart = log.length % 2;
+  function getIsOdd(index: number) {
+    return (index + 2 - oddStart) % 2 === 1;
+  }
+
   return (
     <Fragment>
-      <h2>Editor History</h2>
-      <table>
-        <thead>
+      <table
+        style={{
+          width: "100%",
+          // sizes+colors copied from chrome devtools
+          borderSpacing: 0,
+          fontFamily: "sans-serif",
+        }}
+      >
+        <thead
+          style={{
+            backgroundColor: "rgb(241, 243, 244)",
+          }}
+        >
           <tr>
-            <th>type</th>
-            <th>time</th>
-            <th>source</th>
+            <th style={tableHeaderStyle}>type</th>
+            <th style={tableHeaderStyle}>time</th>
+            <th style={{ ...tableHeaderStyle, borderRight: "none" }}>source</th>
           </tr>
         </thead>
         <tbody>
           {log.map((entry, index) => {
             const isSelected = selectedLogEntry?.time === entry.time;
+
             return (
               <LogListEntry
                 key={entry.time}
+                isOdd={getIsOdd(index)}
+                isSelected={isSelected}
                 onClick={() => setSelectedLogEntry(entry)}
-                aria-selected={isSelected ? "true" : "false"}
-                style={{
-                  background: isSelected ? "blue" : undefined,
-                  color: isSelected ? "white" : undefined,
-                  cursor: "pointer",
-                }}
                 entry={entry}
               />
             );
@@ -47,11 +68,19 @@ export function LogList({
   );
 }
 
+const tableDataCellStyle = {
+  padding: "2px 4px",
+};
+
 function LogListEntry({
   entry,
+  isSelected,
+  isOdd,
   ...trAttrs
 }: {
   entry: EditorLogEvent;
+  isSelected: boolean;
+  isOdd: boolean;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLTableRowElement>,
   HTMLTableRowElement
@@ -64,13 +93,44 @@ function LogListEntry({
   const time = new Date(entry.time);
 
   return (
-    <tr {...trAttrs}>
-      <td>{entry.type}</td>
-      <td>
+    <tr
+      {...trAttrs}
+      style={{
+        fontSize: "13px",
+        lineHeight: "14.4px",
+        color: isSelected ? "white" : undefined,
+        cursor: "pointer",
+        ...getTableRowStyles({ isOdd, isSelected }),
+
+        ...trAttrs.style,
+      }}
+      aria-selected={isSelected ? "true" : "false"}
+    >
+      <td style={tableDataCellStyle}>{entry.type}</td>
+      <td style={tableDataCellStyle}>
         {time.toLocaleTimeString()}.
         {time.getMilliseconds().toString().padStart(3, "0")}
       </td>
-      <td>{sourcePath}</td>
+      <td style={tableDataCellStyle}>{sourcePath}</td>
     </tr>
   );
+}
+
+function getTableRowStyles({
+  isOdd,
+  isSelected,
+}: {
+  isOdd: boolean;
+  isSelected: boolean;
+}) {
+  if (isSelected) {
+    return {
+      background: "rgb(26, 115, 232)",
+      color: "white",
+    };
+  }
+  if (isOdd) {
+    return { background: "rgb(245, 245, 245)" };
+  }
+  return {};
 }
