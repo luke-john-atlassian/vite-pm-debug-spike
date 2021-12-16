@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { backendDebugInterface } from "../backend/backend";
 import { Tabs } from "./Components/Layout";
+import {
+  ToolbarGroup,
+  ToolbarHeading,
+  ToolbarSelect,
+  ToolbarSelectOption,
+} from "./Components/Toolbar";
 import { LogExplorer } from "./LogExplorer/LogExplorer";
 import { Playground } from "./Playground/Playground";
 
@@ -17,8 +23,8 @@ export function DebugUI() {
 
         display: "grid",
         gridTemplateColumns: "100%",
-        gridTemplateRows: "20px 1fr",
-        gridRowGap: "0px",
+        gridTemplateRows: "27px 1fr",
+        gridRowGap: "1px",
         justifyItems: "stretch",
         alignItems: "stretch",
       }}
@@ -29,13 +35,18 @@ export function DebugUI() {
           flexDirection: "row",
           justifyContent: "space-between",
           borderBottom: "1px solid black",
+
+          // sizes+colors copied from chrome devtools
+          backgroundColor: "rgb(241, 243, 244)",
+          borderBottomColor: "rgb(202, 205, 209)",
+          height: "27px",
         }}
       >
-        <div>
-          <h1>ProseMirror debug tool</h1>
-        </div>
-        <div>
-          <select
+        <ToolbarGroup>
+          <ToolbarHeading Tag="h1">ProseMirror debug tool</ToolbarHeading>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <ToolbarSelect
             onChange={(e) => {
               const relatedEditor = listOfTrackedEditors.find(
                 (trackedEditor) => {
@@ -48,14 +59,17 @@ export function DebugUI() {
           >
             {listOfTrackedEditors.map((trackedEditor) => {
               return (
-                <option key={trackedEditor.id} value={trackedEditor.id}>
+                <ToolbarSelectOption
+                  key={trackedEditor.id}
+                  value={trackedEditor.id}
+                >
                   {trackedEditor.label}
                   {trackedEditor.activelyTracked ? null : " (destroyed)"}
-                </option>
+                </ToolbarSelectOption>
               );
             })}
-          </select>
-        </div>
+          </ToolbarSelect>
+        </ToolbarGroup>
       </div>
       <Tabs
         tabs={[
