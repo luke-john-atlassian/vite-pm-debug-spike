@@ -29,10 +29,6 @@ export function useResize({
 
   const resizerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    console.log(resizerRef.current?.offsetLeft);
-  }, []);
-
   const paneProps: React.HtmlHTMLAttributes<HTMLElement> = {
     onMouseMove(event) {
       if (!dragging) {
@@ -56,7 +52,6 @@ export function useResize({
     onMouseDown(event) {
       setDragging(true);
       setPreviousPosition(event.clientX);
-      console.log("start", event.clientX);
     },
   };
 
