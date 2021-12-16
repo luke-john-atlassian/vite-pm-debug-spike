@@ -1,6 +1,5 @@
 import { RegisteredEvent } from "../../../prosemirror-plugin/comms/send-to-backend";
-
-import { StateOverview } from "./StateOverview";
+import { StateDetails } from "./StateDetails";
 
 export function LogEntryRegistered({
   registeredEvent,
@@ -8,8 +7,6 @@ export function LogEntryRegistered({
   registeredEvent: RegisteredEvent;
 }) {
   return (
-    <StateOverview
-      serializableEditorState={registeredEvent.serializableState}
-    />
+    <StateDetails serializableEditorState={registeredEvent.serializableState} />
   );
 }

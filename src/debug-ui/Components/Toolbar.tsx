@@ -1,6 +1,39 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
+
+const toolbarAndContentContext = createContext({ height: "27px" });
+export function ToolbarAndContentContainer({
+  children,
+  height = "27px",
+}: {
+  children: React.ReactNode;
+  height?: string;
+}) {
+  return (
+    <toolbarAndContentContext.Provider value={{ height }}>
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          overflow: "hidden",
+
+          display: "grid",
+          gridTemplateColumns: "100%",
+          gridTemplateRows: `${height} 1fr`,
+          gridRowGap: "1px",
+          justifyItems: "stretch",
+          alignItems: "stretch",
+
+          fontFamily: "sans-serif",
+        }}
+      >
+        {children}
+      </div>
+    </toolbarAndContentContext.Provider>
+  );
+}
 
 export function Toolbar({ children }: { children: React.ReactNode }) {
+  const { height } = useContext(toolbarAndContentContext);
   return (
     <div
       style={{
@@ -12,7 +45,7 @@ export function Toolbar({ children }: { children: React.ReactNode }) {
         // sizes+colors copied from chrome devtools
         backgroundColor: "rgb(241, 243, 244)",
         borderBottomColor: "rgb(202, 205, 209)",
-        height: "27px",
+        height,
       }}
     >
       {children}

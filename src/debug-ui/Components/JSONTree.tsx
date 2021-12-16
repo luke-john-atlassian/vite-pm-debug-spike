@@ -4,7 +4,11 @@ import ReactJSONTree from "react-json-tree";
 export function JSONTree(
   props: Partial<React.ComponentPropsWithoutRef<typeof ReactJSONTree>>
 ) {
-  return <ReactJSONTree {...props} theme={ReactJSONTreeTheme} />;
+  return (
+    <div style={{ fontSize: "12px" }}>
+      <ReactJSONTree {...props} theme={ReactJSONTreeTheme} />
+    </div>
+  );
 }
 
 export const ReactJSONTreeTheme = {
