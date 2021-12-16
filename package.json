@@ -1,12 +1,14 @@
 {
   "name": "vite-pm-debug-spike",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "files": ["build"],
+  "files": [
+    "build"
+  ],
   "exports": {
     ".": "./src/index.ts"
   },
