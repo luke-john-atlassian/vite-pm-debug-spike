@@ -6,6 +6,7 @@ import React from "react";
 import { SerializableEditorState } from "../../../../prosemirror-plugin/comms/send-to-backend";
 
 import { buildColors } from "./Structure_buildColors";
+import { getNodeSize } from "./getNodeSize";
 
 const jsonTreeTheme = {
   scheme: "monokai",
@@ -88,7 +89,7 @@ export function BlockNodeContent(props) {
 
   const content = props.content.content;
 
-  if (content[0].isBlock) {
+  if (content[0].type.isBlock) {
     let startPos = props.startPos + 1;
     return (
       <div
@@ -102,7 +103,7 @@ export function BlockNodeContent(props) {
         {/** @ts-ignore */}
         {content.map((childNode, index) => {
           const pos = startPos;
-          startPos += childNode.content.size;
+          startPos += getNodeSize(childNode);
           return (
             <BlockNode
               key={index}
@@ -133,7 +134,7 @@ export function BlockNodeContent(props) {
       {/** @ts-ignore */}
       {content.map((childNode, index) => {
         const pos = startPos;
-        startPos += childNode.content.size;
+        startPos += getNodeSize(childNode);
         return (
           <InlineNode
             key={index}
@@ -169,7 +170,7 @@ export function BlockNode(props) {
       >
         <Side>{startPos}</Side>
         <Center>{node.type.name}</Center>
-        <Side>{startPos + node.content.size - 1}</Side>
+        <Side>{startPos + getNodeSize(node) - 1}</Side>
       </div>
       <BlockNodeContent
         content={node.content}
@@ -207,7 +208,7 @@ export function InlineNode(props) {
       <Center>
         {node.type.name} {marks}
       </Center>
-      <Side>{startPos + node.content.size}</Side>
+      <Side>{startPos + getNodeSize(node)}</Side>
     </div>
   );
 }
