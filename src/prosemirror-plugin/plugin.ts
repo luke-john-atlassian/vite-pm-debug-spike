@@ -28,7 +28,7 @@ export const devtoolsPlugin = new Plugin({
   },
   state: {
     // Initialize the value of the field.
-    init(config, editorState): DebugPluginState {
+    init(_config, editorState): DebugPluginState {
       const editorTracker = new EditorTracker(editorState);
       return { editorTracker };
     },

@@ -111,7 +111,10 @@ export function getSendToBackend(editorId: string) {
         // @ts-ignore
         serializableTransaction: serialize(transaction),
         // @ts-ignore
-        serializableState: serialize(state),
+        serializableState: serialize({
+          doc: state.doc,
+          selection: state.selection,
+        }),
       };
 
       localPostMessage(transactionEvent);
