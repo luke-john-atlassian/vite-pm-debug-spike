@@ -41,7 +41,7 @@ export class EditorTracker {
   }
 
   private lastTransactionStack: TransactionStack | undefined = undefined;
-  onTransactionComplete(transaction: Transaction<any>, newState: any) {
+  onTransactionComplete(transaction: Transaction<any>, newState: EditorState) {
     this.sendToBackend.logTransaction({
       transaction,
       state: newState,
