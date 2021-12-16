@@ -47,6 +47,9 @@ export function useResize({
         })
       );
     },
+    onMouseUp(event) {
+      setDragging(false);
+    },
   };
 
   const resizerProps: React.HtmlHTMLAttributes<HTMLElement> = {
@@ -54,10 +57,6 @@ export function useResize({
       setDragging(true);
       setPreviousPosition(event.clientX);
       console.log("start", event.clientX);
-    },
-    onMouseUp(event) {
-      console.log("end", event.clientX);
-      setDragging(false);
     },
   };
 

@@ -72,7 +72,7 @@ function Center({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        flexGrow: 1,
+        flex: 1,
         padding: "3px 9px",
         whiteSpace: "pre",
       }}
@@ -195,7 +195,7 @@ export function InlineNode(props) {
     <div
       onClick={() => props.onNodeSelected({ node })}
       style={{
-        flexGrow: 1,
+        flex: 1,
         marginBottom: "3px",
         display: "flex",
         boxSizing: "border-box",
