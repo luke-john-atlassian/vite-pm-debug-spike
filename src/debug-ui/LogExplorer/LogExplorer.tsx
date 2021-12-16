@@ -5,6 +5,8 @@ import type { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-back
 import { LogList } from "./LogList";
 import { LogEntryOverview } from "./LogEntryOverview";
 import { useAppStateContextValue } from "../AppStateProvider";
+import { ToolbarAndContentContainer } from "../Components/Layout";
+import { Toolbar, ToolbarGroup, ToolbarHeading } from "../Components/Toolbar";
 
 export function LogExplorer() {
   const { activeTrackedEditor } = useAppStateContextValue();
@@ -14,27 +16,34 @@ export function LogExplorer() {
     useSelectableLogEntry({ log, editorId });
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignContent: "stretch",
-        overflow: "scroll",
-        height: "100%",
-      }}
-    >
-      <div style={{ overflow: "scroll" }}>
-        <LogList
-          log={log}
-          selectedLogEntry={selectedLogEntry}
-          setSelectedLogEntry={selectLogEntryTime}
-        />
+    <ToolbarAndContentContainer>
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarHeading Tag="h2">Editor History</ToolbarHeading>
+        </ToolbarGroup>
+      </Toolbar>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignContent: "stretch",
+          overflow: "scroll",
+          height: "100%",
+        }}
+      >
+        <div style={{ overflow: "scroll" }}>
+          <LogList
+            log={log}
+            selectedLogEntry={selectedLogEntry}
+            setSelectedLogEntry={selectLogEntryTime}
+          />
+        </div>
+        <div style={{ flexGrow: 1 }}>
+          <LogEntryOverview entry={currentLogEntry} />
+        </div>
       </div>
-      <div style={{ flexGrow: 1 }}>
-        <LogEntryOverview entry={currentLogEntry} />
-      </div>
-    </div>
+    </ToolbarAndContentContainer>
   );
 }
 
