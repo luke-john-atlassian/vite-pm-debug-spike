@@ -4,8 +4,8 @@ import { TransactionStack } from "../utils/getTransactionStack";
 
 // note: we skip out of the type system when passing data between environments
 // this works via ts-ignores in this file, and deserialization in sync-with-editor-trackers
-type SerializableTransaction = Transaction;
-type SerializableEditorState = EditorState;
+export type SerializableTransaction = Transaction;
+export type SerializableEditorState = EditorState;
 
 // serialized state challenges
 // 1. cyclical references in pm objects
