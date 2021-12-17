@@ -12,12 +12,19 @@ export type SerializableEditorState = EditorState;
 // 2. dom node references
 // 3. functions on objects -- funky functions with toString methods setup on them that require overwriting (ie. provide your own implementation or it throws)
 
+export type AppendTransaction = {
+  duration: number;
+  pluginKey: string;
+  addedTransaction: boolean;
+};
+
 export type TransactionEvent = {
   type: "transaction";
   editorId: string;
   time: number;
   duration: number;
   stack: TransactionStack;
+  appendTransactions: AppendTransaction[];
   documentRepresentations: {
     string: string;
   };
@@ -97,11 +104,13 @@ export function getSendToBackend(editorId: string) {
       state,
       stack,
       duration,
+      appendTransactions,
     }: {
       transaction: Transaction;
       state: EditorState;
       stack: TransactionStack;
       duration: number;
+      appendTransactions: AppendTransaction[];
     }) {
       const transactionEvent: TransactionEvent = {
         type: "transaction",
@@ -109,6 +118,7 @@ export function getSendToBackend(editorId: string) {
         time: transaction.time,
         duration,
         stack,
+        appendTransactions,
         documentRepresentations: {
           string: state.doc.toString(),
         },

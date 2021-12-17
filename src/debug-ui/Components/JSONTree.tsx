@@ -5,7 +5,7 @@ export function JSONTree(
   props: Partial<React.ComponentPropsWithoutRef<typeof ReactJSONTree>>
 ) {
   return (
-    <div style={{ fontSize: "12px" }}>
+    <div style={{ fontSize: "12px", marginTop: "-5px" }}>
       <ReactJSONTree {...props} theme={ReactJSONTreeTheme} />
     </div>
   );
