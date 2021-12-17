@@ -73,7 +73,7 @@ export function TransactionDetails({
                         {appendTransaction.duration}
                       </TableDataCell>
                       <TableDataCell>
-                        {appendTransaction.addedTransaction}
+                        {appendTransaction.addedTransaction ? "true" : "false"}
                       </TableDataCell>
                     </TableRow>
                   );
