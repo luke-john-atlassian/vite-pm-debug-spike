@@ -39,6 +39,23 @@ export function TransactionDetails({
         </DetailsContent>
       </Details>
       <Details>
+        <Summary>Append transactions run</Summary>
+        <DetailsContent>
+          <ContentArea>
+            {transactionEvent.appendTransactions.map(
+              (appendTransaction, index) => {
+                return (
+                  <p key={index}>
+                    Plugin key: {appendTransaction.pluginKey}, duration{" "}
+                    {appendTransaction.duration}
+                  </p>
+                );
+              }
+            )}
+          </ContentArea>
+        </DetailsContent>
+      </Details>
+      <Details>
         <Summary isBottom={true}>Source</Summary>
         <DetailsContent>
           <ContentArea>

@@ -2,7 +2,7 @@ import { EditorState, Transaction } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { Schema } from "prosemirror-model";
 
-import { getSendToBackend } from "./comms/send-to-backend";
+import { AppendTransaction, getSendToBackend } from "./comms/send-to-backend";
 import "./comms/listen-to-backend";
 
 import {
@@ -42,12 +42,14 @@ export class EditorTracker {
 
   private lastApplyTransactionDuration: number | undefined = undefined;
   private lastTransactionStack: TransactionStack | undefined = undefined;
+  private lastAppendTransactions: AppendTransaction[] | undefined = undefined;
   onTransactionComplete(transaction: Transaction<any>, newState: EditorState) {
     this.sendToBackend.logTransaction({
       transaction,
       state: newState,
       stack: this.lastTransactionStack!,
       duration: this.lastApplyTransactionDuration!,
+      appendTransactions: this.lastAppendTransactions!,
     });
   }
 
@@ -71,15 +73,50 @@ export class EditorTracker {
     let newEditorState: EditorState;
 
     editorState.applyTransaction = (tr: any) => {
+      let appendTransactionsRun: any[] = [];
+      // @ts-ignore
+      for (const pluginKey of Object.keys(editorState.config.plugins)) {
+        let originalPluginAppendTransaction =
+          // @ts-ignore
+          editorState.config.plugins[pluginKey].spec.appendTransaction;
+        function patchedPluginAppendTransaction(...args: any[]) {
+          const startTime = performance.now();
+          // @ts-ignore
+          const pluginResult = originalPluginAppendTransaction
+            // @ts-ignore
+            .call(editorState.config.plugins[pluginKey], ...args);
+          const endTime = performance.now();
+
+          const appendTransactionDuration = endTime - startTime;
+
+          appendTransactionsRun.push({
+            duration: appendTransactionDuration,
+            // @ts-ignore
+            pluginKey: editorState.config.plugins[pluginKey].key,
+          });
+          // @ts-ignore
+          editorState.config.plugins[pluginKey].spec.appendTransaction =
+            originalPluginAppendTransaction;
+          return pluginResult;
+        }
+        // @ts-ignore
+        editorState.config.plugins[pluginKey].spec.appendTransaction =
+          originalPluginAppendTransaction
+            ? patchedPluginAppendTransaction
+            : undefined;
+      }
+
       const startTime = performance.now();
 
-      this.on_editorState_applyTransaction(tr);
+      this.lastTransactionStack = captureStack();
       let result = original_applyTransaction.call(editorState, tr);
 
       const endTime = performance.now();
 
       const applyTransactionDuration = endTime - startTime;
       this.lastApplyTransactionDuration = applyTransactionDuration;
+
+      this.lastAppendTransactions = appendTransactionsRun;
 
       newEditorState = result.state;
       this.editorState = result.state;
@@ -88,15 +125,6 @@ export class EditorTracker {
 
       return result;
     };
-  }
-
-  on_editorState_applyTransaction(rootTr: Transaction) {
-    try {
-      throw new Error();
-    } catch (err: any) {
-      const transactionPath = getTransactionStack(err.stack);
-      this.lastTransactionStack = transactionPath;
-    }
   }
 
   // ---
@@ -138,5 +166,14 @@ export class EditorTracker {
     newState: EditorState<S>
   ): Transaction<S> | null | undefined | void {
     return null;
+  }
+}
+
+function captureStack() {
+  try {
+    throw new Error();
+  } catch (err: any) {
+    const stack = getTransactionStack(err.stack);
+    return stack;
   }
 }
