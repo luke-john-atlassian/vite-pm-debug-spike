@@ -4,14 +4,14 @@ import { Fragment } from "react";
 import { TrackedEditor } from "../../backend/backend";
 import { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
-const tableHeaderStyle = {
-  fontWeight: 400,
-  fontSize: "13px",
-  color: "rgb(51, 51, 51)",
-  borderBottom: "1px solid rgb(202, 205, 209)",
-  borderRight: "1px solid rgb(202, 205, 209)",
-  height: "20px",
-};
+import {
+  Table,
+  TableBody,
+  TableDataCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../Components/Table";
 
 export function LogList({
   log,
@@ -29,27 +29,16 @@ export function LogList({
 
   return (
     <Fragment>
-      <table
-        style={{
-          width: "100%",
-          // sizes+colors copied from chrome devtools
-          borderSpacing: 0,
-          fontFamily: "sans-serif",
-        }}
-      >
-        <thead
-          style={{
-            backgroundColor: "rgb(241, 243, 244)",
-          }}
-        >
+      <Table>
+        <TableHead>
           <tr>
-            <th style={tableHeaderStyle}>type</th>
-            <th style={tableHeaderStyle}>time</th>
-            <th style={tableHeaderStyle}>duration</th>
-            <th style={{ ...tableHeaderStyle, borderRight: "none" }}>source</th>
+            <TableHeader>type</TableHeader>
+            <TableHeader>time</TableHeader>
+            <TableHeader>duration</TableHeader>
+            <TableHeader isLast={true}>source</TableHeader>
           </tr>
-        </thead>
-        <tbody>
+        </TableHead>
+        <TableBody>
           {log.map((entry, index) => {
             const isSelected = selectedLogEntry?.time === entry.time;
 
@@ -63,15 +52,11 @@ export function LogList({
               />
             );
           })}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </Fragment>
   );
 }
-
-const tableDataCellStyle = {
-  padding: "2px 4px",
-};
 
 function LogListEntry({
   entry,
@@ -102,42 +87,16 @@ function LogListEntry({
     entry.type === "transaction" ? `${entry.duration.toFixed(1)}ms` : "--";
 
   return (
-    <tr
-      {...trAttrs}
-      style={{
-        fontSize: "13px",
-        lineHeight: "14.4px",
-        color: isSelected ? "white" : undefined,
-        cursor: "pointer",
-        ...getTableRowStyles({ isOdd, isSelected }),
-
-        ...trAttrs.style,
-      }}
+    <TableRow
       aria-selected={isSelected ? "true" : "false"}
+      isOdd={isOdd}
+      isSelected={isSelected}
+      {...trAttrs}
     >
-      <td style={tableDataCellStyle}>{entry.type}</td>
-      <td style={tableDataCellStyle}>{timeView}</td>
-      <td style={tableDataCellStyle}>{duration}</td>
-      <td style={tableDataCellStyle}>{sourcePath}</td>
-    </tr>
+      <TableDataCell>{entry.type}</TableDataCell>
+      <TableDataCell>{timeView}</TableDataCell>
+      <TableDataCell>{duration}</TableDataCell>
+      <TableDataCell>{sourcePath}</TableDataCell>
+    </TableRow>
   );
-}
-
-function getTableRowStyles({
-  isOdd,
-  isSelected,
-}: {
-  isOdd: boolean;
-  isSelected: boolean;
-}) {
-  if (isSelected) {
-    return {
-      background: "rgb(26, 115, 232)",
-      color: "white",
-    };
-  }
-  if (isOdd) {
-    return { background: "rgb(245, 245, 245)" };
-  }
-  return {};
 }

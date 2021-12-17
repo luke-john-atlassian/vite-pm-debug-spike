@@ -1,6 +1,10 @@
 {
   "name": "vite-pm-debug-spike",
+<<<<<<< HEAD
   "version": "0.0.12",
+=======
+  "version": "0.0.13",
+>>>>>>> 0b93403843f3e34945f2b56b87eee18886dcdcba
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
