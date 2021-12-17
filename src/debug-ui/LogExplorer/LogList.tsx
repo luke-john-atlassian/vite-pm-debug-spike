@@ -45,6 +45,7 @@ export function LogList({
           <tr>
             <th style={tableHeaderStyle}>type</th>
             <th style={tableHeaderStyle}>time</th>
+            <th style={tableHeaderStyle}>duration</th>
             <th style={{ ...tableHeaderStyle, borderRight: "none" }}>source</th>
           </tr>
         </thead>
@@ -92,6 +93,14 @@ function LogListEntry({
 
   const time = new Date(entry.time);
 
+  const timeView = `${time.toLocaleTimeString()}.${time
+    .getMilliseconds()
+    .toString()
+    .padStart(3, "0")}`;
+
+  const duration =
+    entry.type === "transaction" ? `${entry.duration.toFixed(1)}ms` : "--";
+
   return (
     <tr
       {...trAttrs}
@@ -107,10 +116,8 @@ function LogListEntry({
       aria-selected={isSelected ? "true" : "false"}
     >
       <td style={tableDataCellStyle}>{entry.type}</td>
-      <td style={tableDataCellStyle}>
-        {time.toLocaleTimeString()}.
-        {time.getMilliseconds().toString().padStart(3, "0")}
-      </td>
+      <td style={tableDataCellStyle}>{timeView}</td>
+      <td style={tableDataCellStyle}>{duration}</td>
       <td style={tableDataCellStyle}>{sourcePath}</td>
     </tr>
   );
