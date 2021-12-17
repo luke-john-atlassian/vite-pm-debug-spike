@@ -40,12 +40,14 @@ export class EditorTracker {
     this.monkeyPatch_editorView_eventHandlers();
   }
 
+  private lastApplyTransactionDuration: number | undefined = undefined;
   private lastTransactionStack: TransactionStack | undefined = undefined;
   onTransactionComplete(transaction: Transaction<any>, newState: EditorState) {
     this.sendToBackend.logTransaction({
       transaction,
       state: newState,
       stack: this.lastTransactionStack!,
+      duration: this.lastApplyTransactionDuration!,
     });
   }
 
@@ -69,18 +71,26 @@ export class EditorTracker {
     let newEditorState: EditorState;
 
     editorState.applyTransaction = (tr: any) => {
-      this.editorState_applyTransaction(tr);
+      const startTime = performance.now();
+
+      this.on_editorState_applyTransaction(tr);
       let result = original_applyTransaction.call(editorState, tr);
+
+      const endTime = performance.now();
+
+      const applyTransactionDuration = endTime - startTime;
+      this.lastApplyTransactionDuration = applyTransactionDuration;
 
       newEditorState = result.state;
       this.editorState = result.state;
+      this.onTransactionComplete(tr, newEditorState);
       this.monkeyPatchApplyTransaction(newEditorState!);
 
       return result;
     };
   }
 
-  editorState_applyTransaction(rootTr: Transaction) {
+  on_editorState_applyTransaction(rootTr: Transaction) {
     try {
       throw new Error();
     } catch (err: any) {
@@ -118,7 +128,7 @@ export class EditorTracker {
     oldState: EditorState<S>,
     newState: EditorState<S>
   ): Transaction<S> {
-    this.onTransactionComplete(tr, newState);
+    // called before applyTransaction completed
     return tr;
   }
 

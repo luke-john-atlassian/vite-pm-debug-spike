@@ -16,6 +16,7 @@ export type TransactionEvent = {
   type: "transaction";
   editorId: string;
   time: number;
+  duration: number;
   stack: TransactionStack;
   documentRepresentations: {
     string: string;
@@ -95,15 +96,18 @@ export function getSendToBackend(editorId: string) {
       transaction,
       state,
       stack,
+      duration,
     }: {
       transaction: Transaction;
       state: EditorState;
       stack: TransactionStack;
+      duration: number;
     }) {
       const transactionEvent: TransactionEvent = {
         type: "transaction",
         editorId,
         time: transaction.time,
+        duration,
         stack,
         documentRepresentations: {
           string: state.doc.toString(),

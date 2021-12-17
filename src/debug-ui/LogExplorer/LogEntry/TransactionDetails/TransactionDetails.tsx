@@ -5,6 +5,12 @@ import {
   DetailsContent,
   Summary,
 } from "../../../Components/Layout";
+import {
+  DescriptionDetails,
+  DescriptionList,
+  DescriptionListPair,
+  DescriptionTerm,
+} from "../../../Components/DescriptionList";
 
 export function TransactionDetails({
   transactionEvent,
@@ -14,7 +20,26 @@ export function TransactionDetails({
   return (
     <>
       <Details>
-        <Summary isTop={true}>Source</Summary>
+        <Summary isTop={true}>Meta</Summary>
+        <DetailsContent>
+          <ContentArea>
+            <DescriptionList>
+              <DescriptionListPair>
+                <DescriptionTerm>Duration</DescriptionTerm>
+                <DescriptionDetails>
+                  {transactionEvent.duration.toFixed(1)}ms
+                </DescriptionDetails>
+              </DescriptionListPair>
+              <DescriptionListPair>
+                <DescriptionTerm>Time stamp</DescriptionTerm>
+                <DescriptionDetails>{transactionEvent.time}</DescriptionDetails>
+              </DescriptionListPair>
+            </DescriptionList>
+          </ContentArea>
+        </DetailsContent>
+      </Details>
+      <Details>
+        <Summary isBottom={true}>Source</Summary>
         <DetailsContent>
           <ContentArea>
             <PrettyStack stack={transactionEvent.stack.source} />
