@@ -15,6 +15,7 @@ export type SerializableEditorState = EditorState;
 export type AppendTransaction = {
   duration: number;
   pluginKey: string;
+  addedTransaction: boolean;
 };
 
 export type TransactionEvent = {

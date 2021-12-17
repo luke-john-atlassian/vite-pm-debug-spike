@@ -11,6 +11,14 @@ import {
   DescriptionListPair,
   DescriptionTerm,
 } from "../../../Components/DescriptionList";
+import {
+  Table,
+  TableBody,
+  TableDataCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../../Components/Table";
 
 export function TransactionDetails({
   transactionEvent,
@@ -41,18 +49,38 @@ export function TransactionDetails({
       <Details>
         <Summary>Append transactions run</Summary>
         <DetailsContent>
-          <ContentArea>
-            {transactionEvent.appendTransactions.map(
-              (appendTransaction, index) => {
-                return (
-                  <p key={index}>
-                    Plugin key: {appendTransaction.pluginKey}, duration{" "}
-                    {appendTransaction.duration}
-                  </p>
-                );
-              }
-            )}
-          </ContentArea>
+          <Table>
+            <TableHead>
+              <tr>
+                <TableHeader>Plugin key</TableHeader>
+                <TableHeader>duration</TableHeader>
+                <TableHeader isLast={true}>added transaction</TableHeader>
+              </tr>
+            </TableHead>
+            <TableBody>
+              {transactionEvent.appendTransactions.map(
+                (appendTransaction, index) => {
+                  return (
+                    <TableRow
+                      aria-selected={false}
+                      isOdd={index % 2 === 1}
+                      isSelected={false}
+                    >
+                      <TableDataCell>
+                        {appendTransaction.pluginKey}
+                      </TableDataCell>
+                      <TableDataCell>
+                        {appendTransaction.duration}
+                      </TableDataCell>
+                      <TableDataCell>
+                        {appendTransaction.addedTransaction}
+                      </TableDataCell>
+                    </TableRow>
+                  );
+                }
+              )}
+            </TableBody>
+          </Table>
         </DetailsContent>
       </Details>
       <Details>

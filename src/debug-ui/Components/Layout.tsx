@@ -50,7 +50,7 @@ export function Summary({
 }
 
 export function DetailsContent({ children }: { children: React.ReactNode }) {
-  return <div style={{ padding: "0 5px" }}>{children}</div>;
+  return <div style={{ padding: "0" }}>{children}</div>;
 }
 
 type TabInfo = { label: string };

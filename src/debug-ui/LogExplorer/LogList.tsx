@@ -6,6 +6,7 @@ import { EditorLogEvent } from "../../prosemirror-plugin/comms/send-to-backend";
 
 import {
   Table,
+  TableBody,
   TableDataCell,
   TableHead,
   TableHeader,
@@ -37,7 +38,7 @@ export function LogList({
             <TableHeader isLast={true}>source</TableHeader>
           </tr>
         </TableHead>
-        <tbody>
+        <TableBody>
           {log.map((entry, index) => {
             const isSelected = selectedLogEntry?.time === entry.time;
 
@@ -51,7 +52,7 @@ export function LogList({
               />
             );
           })}
-        </tbody>
+        </TableBody>
       </Table>
     </Fragment>
   );

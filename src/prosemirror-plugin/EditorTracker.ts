@@ -93,6 +93,7 @@ export class EditorTracker {
             duration: appendTransactionDuration,
             // @ts-ignore
             pluginKey: editorState.config.plugins[pluginKey].key,
+            addedTransaction: !!pluginResult,
           });
           // @ts-ignore
           editorState.config.plugins[pluginKey].spec.appendTransaction =
